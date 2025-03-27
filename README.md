@@ -1,3 +1,8 @@
+# Following Three.js tutorial here:
+https://www.youtube.com/watch?v=0fYi8SGA20k&ab_channel=JavaScriptMastery
+
+Currently on 18:01
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
