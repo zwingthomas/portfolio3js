@@ -17,8 +17,14 @@ const Navbar = () => {
         }}> 
           {/* TODO: visit logo.com to generate a new logo */}
           <img src={logo} alt="logo" className="w-9 h-9 object-contain" />
-          <p className="text-white text-[18px] font-bold cursor-pointer">Zwingers <span>| Premium Engineers </span></p>
+          <p className="text-white text-[18px] font-bold cursor-pointer">
+            Zwingers 
+            <span className="sm:black hidden">
+              | Premium Engineers 
+            </span>
+          </p>
         </Link>
+        <p className="text-red-500"></p>
       </div>
     </nav>
   )
