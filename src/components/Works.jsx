@@ -1,4 +1,4 @@
-import Tilt from "react-tilt";
+// import Tilt from "react-tilt";
 import React from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
@@ -26,6 +26,11 @@ const Works = () => {
           ability to solve complex problems, work with different technologies,
           and manage projects effectively.
         </motion.p>
+      </div>
+      <div className="mt-20 flex flex-wrap gap-7">
+        {projects.map((project, index) => (
+          <ProjectCard key={`project-${index}`} index={index} {...project} />
+        ))}
       </div>
     </>
   );
