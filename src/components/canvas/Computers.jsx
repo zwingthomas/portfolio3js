@@ -62,10 +62,11 @@ const ComputersCanvas = () => {
           console.warn("WebGL context lost");
         });
       }}
-      frameLoop="demand"
+      frameloop="demand"
       shadows
       camera={{position: [20, 3, 5], fov: 25}}
-      gl={{ preserveDrawingBuffer: true, powerPreference: 'high-performance' }}
+      gl={{ preserveDrawingBuffer: true, powerPreference: 'high-performance', precision: 'mediump' }}
+      dpr={[1, 1.5]}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls 

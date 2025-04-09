@@ -105,8 +105,9 @@ const BallCanvas = ({ icon }) => {
           console.warn('WebGL context lost');
         });
       }}
-      frameLoop="demand"
-      gl={{ preserveDrawingBuffer: true, powerPreference: 'high-performance' }}
+      frameloop="always"
+      gl={{ preserveDrawingBuffer: true, powerPreference: 'high-performance', precision: 'mediump' }}
+      dpr={[1, 1.5]}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} />
