@@ -16,8 +16,40 @@ const Contact = () => {
     message: ''
   })
   const [loading, setLoading] = useState(false);
-  const handleChange = (e) => {}
-  const handleSubmit = (e) => {}
+  const handleChange = (e) => {
+    const { name, value } = e;
+    setForm({ ...form, [name]: value })
+  }
+
+  // emailjs.com
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    email.js.send(
+      process.env.CONTACT_SERVICE_ID, 
+      process.env.CONTACT_TEMPLATE_ID,
+      {
+        from_name: form.name,
+        to_name: 'Thomas',
+        from_email:form.email,
+        to_email: 'zwingthomas@gmail.com',
+        message: form.message
+      },
+      process.env.CONTACT_PUBLIC_KEY
+     ).then(() => {
+        setLoading(false);
+        alert('Thank you! We will get back to you ASAP!');
+        setForm({
+          name: '',
+          email: '',
+          message: ''
+        })
+      }), (error) => {
+        setLoading(false);
+        console.log(error);
+        alert('Something went wrong.');
+      }
+  }
   
   return (
     <div className="xl:mt-12 xl:flex-row flex-col-reverse flex gap-10 overflow-hidden">
