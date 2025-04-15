@@ -13,6 +13,14 @@
   color-scheme: dark;
 }
 
+.computers-canvas-wrapper {
+  all: unset; /* Resets all inherited CSS properties */
+  display: block; /* Restore block display */
+  position: relative; /* Normal positioning so it participates in document flow */
+  width: 100%; /* Ensure it spans the available width */
+  margin-top: 2rem; /* Add spacing below the hero text */
+}
+
 .hash-span {
   margin-top: -100px;
   padding-bottom: 100px;
