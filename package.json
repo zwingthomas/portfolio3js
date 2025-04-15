@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --open",
-    "build": "vite build",
+    "build": "NODE_OPTIONS='--max-old-space-size=8192' vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,7 +14,7 @@
     "@react-three/drei": "^10.0.5",
     "@react-three/fiber": "^9.1.0",
     "@tailwindcss/vite": "^4.0.17",
-    "framer-motion": "^12.6.2",
+    "framer-motion": "^12.7.3",
     "maath": "^0.10.8",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
