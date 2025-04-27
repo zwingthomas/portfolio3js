@@ -206,27 +206,27 @@ import {
   const testimonials = [
     {
       testimonial:
-        "I thought it was impossible to make a website as beautiful as our product, but Rick proved me wrong.",
-      name: "Sara Lee",
-      designation: "CFO",
-      company: "Acme Co",
-      image: "https://randomuser.me/api/portraits/women/4.jpg",
+        "I hired Thomas to bring curiosity and software engineering to a team that was mostly operations driven. And he did just that. He has an enthusiasm for learning new tech stacks, and may not know it, but he's slowly becoming a full stack developer simply by just wanting to learn about everything.",
+      name: "Dave Wallraff",
+      designation: "Product Leader for Platform",
+      company: "Kohl's",
+      image: "https://media.licdn.com/dms/image/v2/C5103AQFlYVMxQvox6Q/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1547708985062?e=1751500800&v=beta&t=OBOe6YTWMYupdvpfPrI9dQmlyG0FuZzvP-3jdwBqNUk",
     },
     {
       testimonial:
-        "I've never met a web developer who truly cares about their clients' success like Rick does.",
-      name: "Chris Brown",
-      designation: "COO",
-      company: "DEF Corp",
-      image: "https://randomuser.me/api/portraits/men/5.jpg",
+        "During my internship at Kohl’s, Thomas was an assertive voice of reason for my team. In addition, he found an opportunity to reduce Redis' costs across the company. He was generous enough to include me in the project. He was a great mentor in preparing me for meetings with senior management. Due to his proactiveness, he was able to save the company upwards of $36,000 a month. In my short time knowing him, I found him resourceful, collaborative, and consistently supportive. I have no doubt he\’ll make a great addition to any team.",
+      name: "Charles Havyarimana",
+      designation: "Intern",
+      company: "Kohl's",
+      image: "https://media.licdn.com/dms/image/v2/D4D03AQHGWzfii_dVzg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1698946095638?e=1751500800&v=beta&t=kylFJAZzN-7CBHVEhIJR0AcwBTJT1BQ_Ao9jQhBM3lw",
     },
     {
       testimonial:
-        "After Rick optimized our website, our traffic increased by 50%. We can't thank them enough!",
-      name: "Lisa Wang",
-      designation: "CTO",
-      company: "456 Enterprises",
-      image: "https://randomuser.me/api/portraits/women/6.jpg",
+        "Thomas was an absolute pleasure to work with—smart, creative, and always ready to tackle any challenge. He brought great ideas to the table and had a knack for adapting to whatever came his way. His talent and positive energy made a real difference, and he’ll definitely be missed. Wishing him all the best in their next adventure!",
+      name: "Matthew Switzer",
+      designation: "Supply Chain Executive",
+      company: "Kohl's",
+      image: "https://media.licdn.com/dms/image/v2/D5603AQHyTDMPxREZqA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1684525547220?e=1751500800&v=beta&t=EVjhV4bP-AKkiHNVwBR-QjWL2DT5inDipH3neGBHpQ8",
     },
   ];
   
