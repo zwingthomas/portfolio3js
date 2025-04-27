@@ -14,9 +14,9 @@ const Hero = () => {
             <div className="w-1 sm:h-80 h-40 violet-gradient"/>
           </div>
           <div>
-            <h1 className={`${styles.heroHeadText} text-white`}>Hi, we're the <span className="text-[#915eff]">Zwingers</span></h1>
+            <h1 className={`${styles.heroHeadText} text-white`}>Hi, I'm <span className="text-[#915eff]">Thomas Zwinger</span></h1>
             <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-              A Minnesota family with experience ranging from one year to ten.
+              A Minnesota based generalist SRE with 8 years of experience.
             </p>
           </div>
         </div>
