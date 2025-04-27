@@ -15,13 +15,14 @@ import {
     git,
     figma,
     docker,
-    meta,
-    starbucks,
-    tesla,
-    shopify,
+    utc,
+    thomsonreuters,
+    chrobinson,
+    kohls,
     carrent,
     jobit,
     tripguide,
+    travelers,
     threejs,
   } from "../assets";
   
@@ -116,55 +117,88 @@ import {
   
   const experiences = [
     {
-      title: "React.js Developer",
-      company_name: "Starbucks",
-      icon: starbucks,
-      iconBg: "#383E56",
-      date: "March 2020 - April 2021",
+      title: "Embedded Software Engineer",
+      company_name: "UTC Aerospace",
+      icon: utc,
+      iconBg: "#123192",
+      date: "Jun 2017 - Jan 2019",
       points: [
-        "Developing and maintaining web applications using React.js and other related technologies.",
-        "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
-        "Implementing responsive design and ensuring cross-browser compatibility.",
-        "Participating in code reviews and providing constructive feedback to other developers.",
+        "Developed tools on two applications systems to allow communication between aircrafts, pilots, and landing towers.",
+        <>
+          Worked on the front end of the{" "}
+          <a
+            href="https://www.collinsaerospace.com/what-we-do/industries/commercial-aviation/connected-cockpit/intelisight/hardware"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            Tablet Interface Module and AID
+          </a>
+          . Programmed in .NET, JavaScript, Razor, and C#: implementing
+          RESTful frameworks.
+        </>,
+        "Wrote scripts for many different testing requirements, most notably to assess a variety of CFast cards in order to select the best memory device.",
+        "Aided the embedded team by scripting for data collection and analysis in python, programming low-level systems in C, and relying on tools we built in Java.",
       ],
     },
     {
-      title: "React Native Developer",
-      company_name: "Tesla",
-      icon: tesla,
-      iconBg: "#E6DEDD",
-      date: "Jan 2021 - Feb 2022",
+      title: "Web App Developer",
+      company_name: "Travelers",
+      icon: travelers,
+      iconBg: "#FFFFFF",
+      date: "Jan 2019 - Jun 2019",
       points: [
-        "Developing and maintaining web applications using React.js and other related technologies.",
-        "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
-        "Implementing responsive design and ensuring cross-browser compatibility.",
-        "Participating in code reviews and providing constructive feedback to other developers.",
+        "Worked on an agile team to develop and manage an internal website for insurance claims handling.",
+        "As a full-stack developer I got experience working in Angular JS and React as well as a .NET backend.",
+        "Implementing responsive design and ensuring cross-browser compatibility."
       ],
     },
     {
-      title: "Web Developer",
-      company_name: "Shopify",
-      icon: shopify,
-      iconBg: "#383E56",
-      date: "Jan 2022 - Jan 2023",
+      title: "Cloud Engineer",
+      company_name: "Thomson Reuters",
+      icon: thomsonreuters,
+      iconBg: "#C64C21",
+      date: "Nov 2019 - Feb 2021",
       points: [
-        "Developing and maintaining web applications using React.js and other related technologies.",
-        "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
-        "Implementing responsive design and ensuring cross-browser compatibility.",
-        "Participating in code reviews and providing constructive feedback to other developers.",
+        "Amazon Web Services",
+        "Worked primarily with Aurora, SQL, ec2 server maintenance, Amazon Machine Images, and CICD pipelines.",
+        "Primarily programmed in PowerShell, Java, and Python.",
       ],
     },
     {
-      title: "Full stack Developer",
-      company_name: "Meta",
-      icon: meta,
-      iconBg: "#E6DEDD",
-      date: "Jan 2023 - Present",
+      title: "Site Reliability Engineer",
+      company_name: "C.H. Robinson",
+      icon: chrobinson,
+      iconBg: "#FFFFFF",
+      date: "Feb 2021 - Mar 2022",
       points: [
-        "Developing and maintaining web applications using React.js and other related technologies.",
-        "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
-        "Implementing responsive design and ensuring cross-browser compatibility.",
-        "Participating in code reviews and providing constructive feedback to other developers.",
+        "Microsoft Azure",
+        "Set up cloud ready nginx URLs and app gateways with Terraform to secure apis with SSL certs, automating some steps with Python scripts.",
+        "Implementing GSLBs utilizing F5 to route between app gateways for HADR.",
+        "Utilize Terraform to provision services as IaC in Azure and Vault.",
+        "Manage over a dozen Kubernetes clusters with around 100 apps (mainly microservice apis).",
+        "Reliability-as-a-service with preventative alerting using Prometheus, Grafana, and Elk Stack.",
+        "Setting up Helm charts for provisioning networking backends on clusters.",
+        "Run and debug Jenkins pipelines for repository creation, standing up and deploying apps",
+        "Day to day I used Python, Linux, Kubernetes, Terraform, Logging and Metrics, Helm, Jenkins"
+      ],
+    },
+    {
+      title: "Site Reliability Engineer",
+      company_name: "Kohl's",
+      icon: kohls,
+      iconBg: "#E8F0E0",
+      date: "Mar 2022 - Jan 2025",
+      points: [
+        "Google Cloud Platform",
+        "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality automations and tooling.",
+        "Mentoring my peers (many senior to me) through Python courses often involving Selenium.",
+        "Averaged around one automation per month, wearing many hats at once.",
+        "Led a FinOps push to rightsize resources.",
+        "Ideated the winning project and led the team to victory in our company's ChatGPT API hackathon.",
+        "Led push for centralized Airflow, implementing security measures and reducing toil.",
+        "Automated Dynatrace log bucketing in ALL dashboards with Dynatrace API: massive toil and cost savings.",
+        "Resolved critical Black Friday incident as an OpenShift SME during peak shipping loads Saturday night when I was not on-call. Without my intervention we would've had to VTO warehouse workers for all online sales during our most impactful shipping day of the year."
       ],
     },
   ];
