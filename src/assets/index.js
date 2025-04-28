@@ -7,19 +7,19 @@ import github from "./github.png";
 import menu from "./menu.svg";
 import close from "./close.svg";
 
-import css from "./tech/css.png";
+import gcp from "./tech/gcp.png";
 import docker from "./tech/docker.png";
-import figma from "./tech/figma.png";
+import terraform from "./tech/terraform.png";
 import git from "./tech/git.png";
-import html from "./tech/html.png";
-import javascript from "./tech/javascript.png";
-import mongodb from "./tech/mongodb.png";
-import nodejs from "./tech/nodejs.png";
+import bash from "./tech/bash.png";
+import ansible from "./tech/ansible.png";
+import aws from "./tech/aws.png";
 import reactjs from "./tech/reactjs.png";
-import redux from "./tech/redux.png";
-import tailwind from "./tech/tailwind.png";
+import nginx from "./tech/nginx.png";
+import python from "./tech/python.png";
+import javascript from "./tech/javascript.png";
 import typescript from "./tech/typescript.png";
-import threejs from "./tech/threejs.svg";
+import html from "./tech/html.png";
 
 import kohls from "./company/kohls.png";
 import chrobinson from "./company/chrobinson.png";
@@ -40,19 +40,19 @@ export {
   github,
   menu,
   close,
-  css,
+  ansible,
+  aws,
+  bash,
   docker,
-  figma,
+  gcp,
   git,
   html,
+  python,
   javascript,
-  mongodb,
-  nodejs,
+  nginx,
   reactjs,
-  redux,
-  tailwind,
+  terraform,
   typescript,
-  threejs,
   kohls,
   utc,
   travelers,

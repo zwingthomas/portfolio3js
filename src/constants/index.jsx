@@ -6,14 +6,14 @@ import {
     javascript,
     typescript,
     html,
-    css,
+    ansible,
     reactjs,
-    redux,
-    tailwind,
-    nodejs,
-    mongodb,
+    aws,
+    bash,
+    gcp,
+    nginx,
     git,
-    figma,
+    python,
     docker,
     utc,
     thomsonreuters,
@@ -23,7 +23,7 @@ import {
     jobit,
     tripguide,
     travelers,
-    threejs,
+    terraform,
   } from "../assets";
   
   export const navLinks = [
@@ -62,12 +62,16 @@ import {
   
   const technologies = [
     {
-      name: "HTML 5",
-      icon: html,
+      name: "GCP",
+      icon: gcp,
     },
     {
-      name: "CSS 3",
-      icon: css,
+      name: "AWS",
+      icon: aws,
+    },
+    {
+      name: "Python",
+      icon: python,
     },
     {
       name: "JavaScript",
@@ -82,35 +86,31 @@ import {
       icon: reactjs,
     },
     {
-      name: "Redux Toolkit",
-      icon: redux,
+      name: "HTML",
+      icon: html,
     },
     {
-      name: "Tailwind CSS",
-      icon: tailwind,
+      name: "Bash",
+      icon: bash,
     },
     {
-      name: "Node JS",
-      icon: nodejs,
-    },
-    {
-      name: "MongoDB",
-      icon: mongodb,
-    },
-    {
-      name: "Three JS",
-      icon: threejs,
-    },
-    {
-      name: "git",
+      name: "Git",
       icon: git,
     },
     {
-      name: "figma",
-      icon: figma,
+      name: "Ansible",
+      icon: ansible,
     },
     {
-      name: "docker",
+      name: "Terraform",
+      icon: terraform,
+    },
+    {
+      name: "Nginx",
+      icon: nginx,
+    },
+    {
+      name: "Docker",
       icon: docker,
     },
   ];
@@ -228,6 +228,47 @@ import {
       company: "Kohl's",
       image: "https://media.licdn.com/dms/image/v2/D5603AQHyTDMPxREZqA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1684525547220?e=1751500800&v=beta&t=EVjhV4bP-AKkiHNVwBR-QjWL2DT5inDipH3neGBHpQ8",
     },
+    {
+      testimonial:
+        "Thomas has a great engineering/development mind. He is incredibly focused on delivering a solution that meets his customer's needs and works hard to keep them involved every step of the way with requirements gathering, building, testing, and support. Thomas also is never afraid to share his knowledge and experience to help lift up those around him. He loves new technology, consuming information about it to improve his competency and is always offering innovative ways to tackle the problems the team is facing.",
+      name: "Robin Pindel",
+      designation: "Supply Chain SRE",
+      company: "Kohl's",
+      image: "https://media.licdn.com/dms/image/v2/C4E03AQENHkjc1Ikxag/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1635127977560?e=1751500800&v=beta&t=23vdaNCrG1DSe8xfztqLwmRNa0S9dsg596KqRUGT5FE",
+    },
+    {
+      testimonial:
+        "I had the pleasure of working with Thomas Zwinger for two years at Kohl’s, and he is an outstanding professional. His ability to combine Software Engineering and Reliability Engineering has greatly improved system reliability and streamlined processes. Thomas developed tools and automations that reduced manual work and minimized errors, making a real impact on our operations.\n\nA natural problem-solver, Thomas consistently identifies areas for improvement and implements strategic, high-quality solutions. He is also a fantastic team player, always ready to offer support and foster a positive, collaborative work environment.\n\nThomas is dependable, meets deadlines under pressure, and continuously seeks ways to improve. He would be a tremendous asset to any team or organization, and I highly recommend him.",
+      name: "Debashish Swar",
+      designation: "Supply Chain Architect",
+      company: "Manhattan",
+      image: "https://media.licdn.com/dms/image/v2/C4E03AQFLB3yk_MkuWA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516764125025?e=1751500800&v=beta&t=6nrVdQ2EwJ_uOleIanNBfr_yvlNoDmSbLmrT4DaI2A0",
+    },
+    {
+      testimonial:
+        "I had the pleasure of being on a site reliability team with Thomas over the last few years, and was impressed with his dedication to developing his technological skillset. He played a major role in educating several members of our team on development best-practices. Additionally, he created a full stack application that was valuable for navigating issues with one of our third party vendors, Proship (PSLG). His dedication and hard work were evident, and he would make a fantastic addition to any team.",
+      name: "Ben Jones",
+      designation: "Senior Supply Chain SRE",
+      company: "Kohl's",
+      image: "https://media.licdn.com/dms/image/v2/C4E03AQF6jPnwDeXLbQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1530856335500?e=1751500800&v=beta&t=5sUorVOtJGkKGJPEJpwcaMCq33ENniCOGi9iqQbArzs",
+    },
+    {
+      testimonial:
+        "To whom it may concern:\nMy name is Andrew Janosik, a Site Reliability Engineer at Kohls. I have 6 years of experience working in Software Development and Automation. While I've worked with many people over the course of my career, Thomas is one individual I have worked with who uniquely stands out.\nDuring our time together, Thomas displayed great talents in programming, the ability to work on a team, and willingness to find ways to make code and infrastructures efficient. When we first met, I was immediately impressed with Thomas and his ability to quickly learn and adapt to new technologies to meet the goals set before us as Site Reliability Engineers. We often switched coding languages based on the areas we had to cover that day. \nThomas and I were on the same team for about a year. During that time Thomas and I would pair on new automations using python and javascript to help monitor websites via Selenium. I always appreciated help from Thomas when he would teach me new tricks with javascript to ensure we were using the most efficient code possible. I also found it quite admirable that Thomas would often try to find areas where the company could save money. He would take lead to ensure managers would be able to save money on their budget by cleaning up resources. One example that comes to mind is when he found our redis instances were allocating more resources than needed and Kohls could save money by lowering the overall resources for each area. \nIt's not just Thomas' technical skills that impressed me, he was a joy to work with because of his positivity and go-getter attitude. His ability to pivot during priority changes and quick learning were also necessary and valued in the constantly evolving SRE field. \nI am confident that Thomas would be a great fit for your organization. Not only will he bring the kind of skills and experiences you're looking for in an applicant, but he will also quickly become an asset and help your organization grow in any way he can.",
+      name: "Andrew Janosik",
+      designation: "Workday SRE",
+      company: "Kohl's",
+      image: "https://media.licdn.com/dms/image/v2/C4E03AQENHkjc1Ikxag/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1635127977560?e=1751500800&v=beta&t=23vdaNCrG1DSe8xfztqLwmRNa0S9dsg596KqRUGT5FE",
+    },
+    {
+      testimonial:
+        "I worked closely with Thomas at Kohl's as a software engineer while he served as one of the Site Reliability Engineers for my team. Thomas brought exceptional technical expertise to our monitoring and cloud systems, while maintaining a collaborative approach to incident management. His ability to diagnose complex issues and implement effective solutions was invaluable to our team, and he frequently went above and beyond to ensure our systems' reliability. Pairing with us to find root causes of bugs. While it never surprised me (as we were always competing for the number 1 slot in Advent of Code) Thomas would often quickly find improvements to make to our code-base despite being an SRE. He would even mentor more junior developers: something I have never seen an SRE do before. Thomas's enthusiasm for sharing knowledge and learning new technologies made him an outstanding team member who elevated everyone around him, and his technical expertise would make him an excellent asset to any engineering organization.",
+      name: "Joe Weller",
+      designation: "Senior SWE",
+      company: "Kohl's",
+      image: "https://writedirection.com/wp-content/uploads/2016/09/blank-profile-picture-973460_960_720.png",
+    },
+    
   ];
   
   const projects = [
