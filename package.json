@@ -7,8 +7,10 @@
     "dev": "vite --open",
     "build": "NODE_OPTIONS='--max-old-space-size=8192' vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist -t true"
   },
+  "homepage": "https://zwingthomas.github.io/portfolio3js",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@emotion/is-prop-valid": "^1.3.1",
@@ -28,6 +30,7 @@
     "three": "^0.175.0"
   },
   "devDependencies": {
+    "gh-pages": "^6.1.1",
     "@eslint/js": "^9.21.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -36,6 +39,7 @@
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "gh-pages": "^6.3.0",
     "globals": "^15.15.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
