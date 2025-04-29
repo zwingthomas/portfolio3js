@@ -24,9 +24,9 @@ jobs:
 
       - name: Create .env for Vite
         run: |
-          echo "VITE_EMAILJS_SERVICE_ID=${{ secrets.VITE_EMAILJS_SERVICE_ID }}"   >> .env
-          echo "VITE_EMAILJS_TEMPLATE_ID=${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}" >> .env
-          echo "VITE_EMAILJS_PUBLIC_KEY=${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}"   >> .env
+          echo "VITE_CONTACT_SERVICE_ID=${{ secrets.VITE_CONTACT_SERVICE_ID }}"   >> .env
+          echo "VITE_CONTACT_TEMPLATE_ID=${{ secrets.VITE_CONTACT_TEMPLATE_ID }}" >> .env
+          echo "VITE_CONTACT_PUBLIC_KEY=${{ secrets.VITE_CONTACT_PUBLIC_KEY }}"   >> .env
 
       - run: npm run build
 
