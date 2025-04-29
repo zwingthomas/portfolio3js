@@ -2,7 +2,7 @@
 <p align="center">A fully-interactive, Three.js-powered portfolio built with React + TailwindCSS — deployed in one command to GitHub Pages.</p>
 
 <div align="center">
-  <img src="https://img.shields.io/github/deployments/your-user/your-repo/github-pages?color=2EA043&label=github%20pages">
+  <img src="https://img.shields.io/github/deployments/zwingthomas/portfolio3js/github-pages?color=2EA043&label=github%20pages">
   <img src="https://img.shields.io/badge/three.js-%23000?style=flat&logo=three.js&logoColor=white">
   <img src="https://img.shields.io/badge/react-%2361DAFB?style=flat&logo=react&logoColor=black">
   <img src="https://img.shields.io/badge/tailwind-%2306B6D4?style=flat&logo=tailwindcss&logoColor=white">
