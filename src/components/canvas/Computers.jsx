@@ -22,7 +22,7 @@ const Computers = ({ isMobile }) => {
     <mesh>
       <hemisphereLight intensity={isMobile ? 3 : 1.5} groundColor="black" />
       {/* keep only one dynamic light on mobile */}
-      {!isMobile && <pointLight intensity={1} />}
+      <pointLight intensity={isMobile ? 3 : 1} />
       {/* TODO: Spotlight not working */}
       {!isMobile && (
         <spotLight
@@ -36,8 +36,8 @@ const Computers = ({ isMobile }) => {
       )}
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.2 : 0.75}
-        position={isMobile ? [0, 0, -0.35] : [0, -3.25, -1.5]}
+        scale={isMobile ? 0.35 : 0.75}
+        position={isMobile ? [0, -1.2, -1] : [0, -3.25, -1.5]}
         rotation={[-0.01, -0.2, -0.1]}
       />
     </mesh>
