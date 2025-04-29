@@ -76,12 +76,19 @@ https://<username>.github.io/<repo-name>/.
 
 ## 🗂 Project Structure
 src/
+
  ├─ assets/                # images & icons
+ 
  ├─ components/            # Navbar, Hero, About, …
+ 
  ├─ canvas/                # 3-D React-Three components
+ 
  ├─ constants/             # timeline / nav data
+ 
  ├─ hoc/                   # SectionWrapper
+ 
  ├─ utils/                 # motion variants
+ 
  └─ App.jsx
 
 ## 📝 License
