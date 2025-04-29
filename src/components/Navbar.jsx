@@ -5,7 +5,7 @@ import { styles } from '../styles';
 import { navLinks } from '../constants';
 import { menu, close } from '../assets';
 
-import zLogo from "/z.png";
+import zLogo from "/zLogo.png";
 
 const Navbar = () => {
   const [active, setActive] = useState('');
