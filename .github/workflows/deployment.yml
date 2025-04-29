@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
 permissions:
-  contents: write
-  pages: write 
+  contents: write     # allow commit/push to gh-pages
+  pages: write        # not strictly required, but fine
 
 on:
   push:
@@ -18,11 +18,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
+          cache: npm
 
       - run: npm ci --legacy-peer-deps
 
-      - name: Write env file
+      - name: Create .env for Vite
         run: |
           echo "VITE_EMAILJS_SERVICE_ID=${{ secrets.VITE_EMAILJS_SERVICE_ID }}"   >> .env
           echo "VITE_EMAILJS_TEMPLATE_ID=${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}" >> .env
