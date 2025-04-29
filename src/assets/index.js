@@ -1,4 +1,3 @@
-import z from "./z.png";
 import backend from "./backend.png";
 import creator from "./creator.png";
 import mobile from "./mobile.png";
@@ -32,7 +31,6 @@ import cloudagnostic from "./projects/cloudagnostic.png";
 import jenkins from "./projects/jenkins.png";
 
 export {
-  z,
   backend,
   creator,
   mobile,

@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { styles } from '../styles';
 import { navLinks } from '../constants';
-import { z, menu, close } from '../assets';
+import { menu, close } from '../assets';
+
+import zLogo from "/z.png";
 
 const Navbar = () => {
   const [active, setActive] = useState('');
@@ -21,7 +23,7 @@ const Navbar = () => {
           }}
         >
           {/* TODO: visit logo.com to generate a new logo */}
-          <img src={z} alt="logo" className="w-9 h-9 object-contain" />
+          <img src={zLogo} alt="logo" className="w-9 h-9 object-contain" />
           <p className="text-white text-[18px] font-bold cursor-pointer flex">Thomas Zwinger&nbsp;<span className="hidden sm:block"> | Professional Generalist</span></p>
         </Link>
         <ul className="list-none hidden sm:flex flex-row gap-10">
