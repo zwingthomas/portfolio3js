@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="public/logo.png" alt="3-D Portfolio banner" width="750">
-</p>
-
 <h1 align="center">⚡ 3-D Developer Portfolio</h1>
 <p align="center">A fully-interactive, Three.js-powered portfolio built with React + TailwindCSS — deployed in one command to GitHub Pages.</p>
 
@@ -12,16 +8,6 @@
   <img src="https://img.shields.io/badge/tailwind-%2306B6D4?style=flat&logo=tailwindcss&logoColor=white">
   <img src="https://img.shields.io/badge/emailjs-%23D44638?style=flat&logo=gmail&logoColor=white">
 </div>
-
----
-
-## ✨ Demo
-
-| Desktop | Mobile |
-|---------|--------|
-| ![](docs/demo-desktop.gif) | ![](docs/demo-mobile.gif) |
-
-> **Live:** https://<username>.github.io/<repo-name>/
 
 ---
 
