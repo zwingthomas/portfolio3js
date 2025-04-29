@@ -15,7 +15,7 @@ import bash from "./tech/bash.png";
 import ansible from "./tech/ansible.png";
 import aws from "./tech/aws.png";
 import reactjs from "./tech/reactjs.png";
-import nginx from "./tech/nginx.png";
+import kubernetes from "./tech/kubernetes.png";
 import python from "./tech/python.png";
 import javascript from "./tech/javascript.png";
 import typescript from "./tech/typescript.png";
@@ -27,9 +27,9 @@ import utc from "./company/utc.png";
 import thomsonreuters from "./company/thomsonreuters.png";
 import travelers from "./company/travelers.png";
 
-import carrent from "./carrent.png";
-import jobit from "./jobit.png";
-import tripguide from "./tripguide.png";
+import indigogardencinemaclub from "./projects/indigogardencinemaclub.png";
+import cloudagnostic from "./projects/cloudagnostic.png";
+import jenkins from "./projects/jenkins.png";
 
 export {
   logo,
@@ -49,7 +49,7 @@ export {
   html,
   python,
   javascript,
-  nginx,
+  kubernetes,
   reactjs,
   terraform,
   typescript,
@@ -58,7 +58,7 @@ export {
   travelers,
   thomsonreuters,
   chrobinson,
-  carrent,
-  jobit,
-  tripguide,
+  indigogardencinemaclub,
+  jenkins,
+  cloudagnostic,
 };

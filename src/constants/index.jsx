@@ -11,7 +11,7 @@ import {
     aws,
     bash,
     gcp,
-    nginx,
+    kubernetes,
     git,
     python,
     docker,
@@ -19,9 +19,9 @@ import {
     thomsonreuters,
     chrobinson,
     kohls,
-    carrent,
-    jobit,
-    tripguide,
+    jenkins,
+    cloudagnostic,
+    indigogardencinemaclub,
     travelers,
     terraform,
   } from "../assets";
@@ -106,8 +106,8 @@ import {
       icon: terraform,
     },
     {
-      name: "Nginx",
-      icon: nginx,
+      name: "Kubernetes",
+      icon: kubernetes,
     },
     {
       name: "Docker",
@@ -273,67 +273,91 @@ import {
   
   const projects = [
     {
-      name: "Car Rent",
+      name: "Jenkins-in-a-Box",
       description:
-        "Web-based platform that allows users to search, book, and manage car rentals from various providers, providing a convenient and efficient solution for transportation needs.",
+        "With a single command on the command line and a few environment variables you can stand up a fully configured Jenkins server on an EC2 instance instantly.",
       tags: [
         {
-          name: "react",
-          color: "blue-text-gradient",
+          name: "jenkins",
+          color: "jenkins-text-gradient",
         },
         {
-          name: "mongodb",
-          color: "green-text-gradient",
+          name: "ansible",
+          color: "ansible-text-gradient",
         },
         {
-          name: "tailwind",
-          color: "pink-text-gradient",
+          name: "terraform",
+          color: "terraform-text-gradient",
+        },
+        {
+          name: "shell",
+          color: "shell-text-gradient",
+        },
+        {
+          name: "jinja",
+          color: "jinja-text-gradient",
         },
       ],
-      image: carrent,
-      source_code_link: "https://github.com/",
+      image: jenkins,
+      source_code_link: "https://github.com/zwingthomas/Jenkins",
     },
     {
-      name: "Job IT",
+      name: "Cloud Agnostic Website",
       description:
-        "Web application that enables users to search for job openings, view estimated salary ranges for positions, and locate available jobs based on their current location.",
+        "A Jenkins CICD pipeline that stands up a containerized website in GCP, AWS, and Azure. The website can be rebalanced between them.",
       tags: [
         {
-          name: "react",
-          color: "blue-text-gradient",
+          name: "terraform",
+          color: "terraform-text-gradient",
         },
         {
-          name: "restapi",
-          color: "green-text-gradient",
+          name: "jenkins cicd",
+          color: "jenkins-text-gradient",
         },
         {
-          name: "scss",
-          color: "pink-text-gradient",
+          name: "gcp",
+          color: "gcp-text-gradient",
+        },
+        {
+          name: "aws",
+          color: "aws-text-gradient",
+        },
+        {
+          name: "azure",
+          color: "azure-text-gradient",
+        },
+        {
+          name: "dns",
+          color: "dns-text-gradient",
         },
       ],
-      image: jobit,
-      source_code_link: "https://github.com/",
+      image: cloudagnostic,
+      source_code_link: "https://github.com/zwingthomas/cloud-agnostic",
     },
     {
-      name: "Trip Guide",
+      name: "Indigo Garden Cinema Club",
       description:
-        "A comprehensive travel booking platform that allows users to book flights, hotels, and rental cars, and offers curated recommendations for popular destinations.",
+        "A streaming platform to give a bigger cut to up and coming indie filmmakers.",
       tags: [
         {
           name: "nextjs",
-          color: "blue-text-gradient",
+          color: "nextjs-text-gradient",
         },
         {
-          name: "supabase",
-          color: "green-text-gradient",
+          name: "tailwind css",
+          color: "tailwind-text-gradient",
         },
         {
-          name: "css",
-          color: "pink-text-gradient",
+          name: "github actions",
+          color: "github-actions-text-gradient",
+        },
+        {
+          name: "terraform",
+          color: "terraform-text-gradient",
         },
       ],
-      image: tripguide,
-      source_code_link: "https://github.com/",
+      image: indigogardencinemaclub,
+      source_code_link: "https://github.com/The-Community-A-Coding-Cohort/Indigo-Garden-Club",
     },
   ];
   

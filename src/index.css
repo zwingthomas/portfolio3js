@@ -70,6 +70,7 @@
     #f5af19
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -86,6 +87,7 @@
     #38ef7d
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -103,6 +105,7 @@
     #56ccf2
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -119,6 +122,136 @@
     #fc6767
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── CI / DevOps ───── */
+.jenkins-text-gradient {
+  background: #d24939;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #8b1c13, #d24939);
+  background:         linear-gradient(to top, #8b1c13, #d24939);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.terraform-text-gradient {
+  background: #9a6bff;
+  background: -webkit-linear-gradient(to top, #3f00ff, #9a6bff);
+  background:         linear-gradient(to top, #3f00ff, #9a6bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ansible-text-gradient {
+  background: #ffffff;
+  background: -webkit-linear-gradient(to top, #5e5e5e, #ffffff);
+  background:         linear-gradient(to top, #5e5e5e, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.github-actions-text-gradient {
+  background: #5ddcff;
+  background: -webkit-linear-gradient(to top, #1f6feb, #5ddcff);
+  background:         linear-gradient(to top, #1f6feb, #5ddcff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── IaC / Scripting ───── */
+.jinja-text-gradient {
+  background: #ffc960;
+  background: -webkit-linear-gradient(to top, #ff7b00, #ffc960);
+  background:         linear-gradient(to top, #ff7b00, #ffc960);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shell-text-gradient {
+  background: #4ade80;
+  background: -webkit-linear-gradient(to top, #059669, #4ade80);
+  background:         linear-gradient(to top, #059669, #4ade80);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Cloud Vendors ───── */
+.aws-text-gradient {
+  background: #f90;
+  background: -webkit-linear-gradient(to top, #ff9900, #ffc466);
+  background:         linear-gradient(to top, #ff9900, #ffc466);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.azure-text-gradient {
+  background: #3aa0ff;
+  background: -webkit-linear-gradient(to top, #0078d4, #3aa0ff);
+  background:         linear-gradient(to top, #0078d4, #3aa0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gcp-text-gradient {
+  background: #34a853; /* fallback */
+  background: -webkit-linear-gradient(
+    45deg,
+    #34a853 0%,   /* green */
+    #ea4335 35%,  /* red   */
+    #fbbc05 70%,  /* yellow*/
+    #ffffff 100%  /* white */
+  );
+  background:         linear-gradient(
+    45deg,
+    #34a853 0%,
+    #ea4335 35%,
+    #fbbc05 70%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Web / CSS Frameworks ───── */
+.nextjs-text-gradient {
+  /* dark-to-light gradient inside the glyphs */
+  background: #b4b4b4;
+  background: -webkit-linear-gradient(to top, #000 5%, #8b8b8b 95%);
+  background:         linear-gradient(to top, #000 5%, #8b8b8b 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* thin light border for contrast on dark bg */
+  -webkit-text-stroke: 1px #d1d5db;     /* Tailwind slate-300ish */
+}
+
+.tailwind-text-gradient {
+  background: #67e8f9;
+  background: -webkit-linear-gradient(to top, #0ea5e9, #67e8f9);
+  background:         linear-gradient(to top, #0ea5e9, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Networking ───── */
+.dns-text-gradient {
+  background: #7dd3fc;
+  background: -webkit-linear-gradient(to top, #2563eb, #7dd3fc);
+  background:         linear-gradient(to top, #2563eb, #7dd3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
