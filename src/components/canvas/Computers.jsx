@@ -10,7 +10,8 @@ const PauseOnBlur = () => {
   useEffect(() => {
     const onVisibility = () => !document.hidden && invalidate();
     document.addEventListener('visibilitychange', onVisibility);
-    return () => document.removeEventListener('visibilitychange', onVisibility);
+    return () =>
+      document.removeEventListener('visibilitychange', onVisibility);
   }, [invalidate]);
   return null;
 };
@@ -20,16 +21,19 @@ const Computers = ({ isMobile }) => {
   return (
     <mesh>
       <hemisphereLight intensity={isMobile ? 3 : 1.5} groundColor="black" />
-      <pointLight intensity={isMobile ? 2 : 1} />
+      {/* keep only one dynamic light on mobile */}
+      {!isMobile && <pointLight intensity={1} />}
       {/* TODO: Spotlight not working */}
-      <spotLight
-        position={[-20, 50, 10]}
-        angle={0.12}
-        penumbra={1}
-        intensity={1}
-        castShadow
-        shadow-mapSize={1024}
-      />
+      {!isMobile && (
+        <spotLight
+          position={[-20, 50, 10]}
+          angle={0.12}
+          penumbra={1}
+          intensity={1}
+          castShadow
+          shadow-mapSize={1024}
+        />
+      )}
       <primitive
         object={computer.scene}
         scale={isMobile ? 0.2 : 0.75}
@@ -60,6 +64,11 @@ const ComputersCanvas = () => {
     return () => window.removeEventListener('resize', update);
   }, []);
 
+  // invalidate when user drags (needed for frameloop="never")
+  const handleDrag = () => {
+    if (isMobile) useThree.getState().invalidate();
+  };
+
   return (
     <Canvas
       onCreated={({ gl }) => {
@@ -69,8 +78,8 @@ const ComputersCanvas = () => {
           window.location.reload(); // simplest recovery
         });
       }}
-      frameloop="demand"
-      shadows
+      frameloop={isMobile ? 'never' : 'demand'} /* mobile = render on demand */
+      shadows={!isMobile}                       /* disable shadows on phones   */
       camera={{ position: [20, 3, 5], fov: 25 }}
       gl={{
         preserveDrawingBuffer: true,
@@ -87,6 +96,8 @@ const ComputersCanvas = () => {
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
+          onStart={handleDrag}
+          onChange={handleDrag}
         />
         <Computers isMobile={isMobile} />
       </Suspense>
