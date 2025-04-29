@@ -28,6 +28,10 @@ jobs:
           echo "VITE_CONTACT_TEMPLATE_ID=${{ secrets.VITE_CONTACT_TEMPLATE_ID }}" >> .env
           echo "VITE_CONTACT_PUBLIC_KEY=${{ secrets.VITE_CONTACT_PUBLIC_KEY }}"   >> .env
 
+      - name: Bump build hash
+        run: |
+          echo "build=$(date +%s)" > src/_build.txt
+
       - run: npm run build
 
       - uses: peaceiris/actions-gh-pages@v4
