@@ -10,8 +10,11 @@
 </div>
 
 ---
+## 🧠 Plans and Goals
+As of now this repository follows a single tutorial, however, there are many very cool looking and distinct tutorials on ThreeJS. As this project gets more attention I will be adding more and more tutorials to this repository. For users who want to implement these assets, layouts, backgrounds, icons, etc. and use them on their own site, it will all be configurable on one file. You will be able to mix and match between a variety of tutorials. After this I expect to have a very solid grasp on ThreeJs and will begin making my own tutorials: continuing to add options for those who fork this repository.
 
-## 🎬 Original Tutorial
+
+## 🎬 Tutorials
 
 Build and Deploy an **Amazing 3-D Web Developer Portfolio in React JS**  
 [JavaScript Mastery (YouTube, 2 h 49 m)](https://youtu.be/0fYi8SGA20k)
@@ -58,10 +61,7 @@ cd <repo-name>
 pnpm install          # or npm / yarn
 
 # 2 · env secrets
-cp .env.example .env.local
-#   VITE_EMAILJS_SERVICE_ID=
-#   VITE_EMAILJS_TEMPLATE_ID=
-#   VITE_EMAILJS_PUBLIC_KEY=
+cp .env.example .env
 
 # 3 · dev server
 pnpm dev
@@ -76,21 +76,16 @@ https://<username>.github.io/<repo-name>/.
 
 ## 🗂 Project Structure
 src/
-
  ├─ assets/                # images & icons
- 
  ├─ components/            # Navbar, Hero, About, …
- 
  ├─ canvas/                # 3-D React-Three components
- 
  ├─ constants/             # timeline / nav data
- 
  ├─ hoc/                   # SectionWrapper
- 
  ├─ utils/                 # motion variants
- 
  └─ App.jsx
 
 ## 📝 License
 MIT — fork, learn, remix!
 A link back to this repo or the original tutorial is always appreciated.
+
+
