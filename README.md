@@ -55,15 +55,17 @@ All credit for the base idea and code structure goes to **@JS-Mastery**.
 ## 🔧 Local Setup
 
 ```bash
-# 1 · clone & install
+# 1 · Fork the repository and watch this repo for updates
+
+# 2 · clone & install
 git clone https://github.com/<username>/<repo-name>.git
 cd <repo-name>
 pnpm install          # or npm / yarn
 
-# 2 · env secrets
+# 3 · env secrets
 cp .env.example .env
 
-# 3 · dev server
+# 4 · dev server
 pnpm dev
 ```
 -- Requires Node 18+.
@@ -75,6 +77,7 @@ vite.config.js already sets base: "/<repo-name>/", so paths resolve at
 https://<username>.github.io/<repo-name>/.
 
 ## 🗂 Project Structure
+```text
 src/
  ├─ assets/                # images & icons
  ├─ components/            # Navbar, Hero, About, …
@@ -83,6 +86,7 @@ src/
  ├─ hoc/                   # SectionWrapper
  ├─ utils/                 # motion variants
  └─ App.jsx
+```
 
 ## 📝 License
 MIT — fork, learn, remix!
