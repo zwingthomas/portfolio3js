@@ -73,8 +73,11 @@ pnpm dev
 ```
 pnpm run deploy              # builds & pushes dist/ → gh-pages branch
 ```
+
+```text
 vite.config.js already sets base: "/<repo-name>/", so paths resolve at
 https://<username>.github.io/<repo-name>/.
+```
 
 ## 🗂 Project Structure
 ```text
