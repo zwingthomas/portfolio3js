@@ -19,7 +19,7 @@ As of now this repository follows a single tutorial, however, there are many ver
 Build and Deploy an **Amazing 3-D Web Developer Portfolio in React JS**  
 [JavaScript Mastery (YouTube, 2 h 49 m)](https://youtu.be/0fYi8SGA20k)
 
-I followed and remixed Patrick’s fantastic walkthrough, adding my own content, colours, and Easter eggs.  
+I followed and remixed Patrick’s fantastic walkthrough, adding my own content, colors, and Easter eggs.  
 All credit for the base idea and code structure goes to **@JS-Mastery**.
 
 ---
