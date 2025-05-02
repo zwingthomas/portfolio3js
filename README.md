@@ -35,7 +35,7 @@ All credit for the base idea and code structure goes to **@JS-Mastery**.
 | Testimonials    | Carousel with “Read more” clamps | `react-intersection-observer` |
 | Contact         | Form → **EmailJS** (no server) + toast | Validation & loading states |
 | Starfield       | Instanced 3-D stars in WebGL | Suspense + `Preload` |
-| CI/CD           | **`npm run deploy`** → GitHub Pages | `gh-pages` CLI |
+| CI/CD           | **`npm run deploy`** → GitHub Pages | Github Actions `gh-pages` CLI |
 
 ---
 
