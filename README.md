@@ -11,7 +11,7 @@
 
 ---
 ## 🧠 Plans and Goals
-As of now this repository follows a single tutorial, however, there are many very cool looking and distinct tutorials on ThreeJS. As this project gets more attention I will be adding more and more tutorials to this repository. For users who want to implement these assets, layouts, backgrounds, icons, etc. and use them on their own site, it will all be configurable on one file. You will be able to mix and match between a variety of tutorials. After this I expect to have a very solid grasp on ThreeJs and will begin making my own tutorials: continuing to add options for those who fork this repository.
+As of now this repository follows a single tutorial, however, there are many very cool looking and distinct tutorials on Three.js. As this project gets more attention I will be adding more and more tutorials to this repository. For users who want to implement these assets, layouts, backgrounds, icons, etc. and use them on their own site, it will all be configurable in one file. You will be able to mix-and-match between a variety of tutorials. After this I expect to have a very solid grasp on Three.js and will begin making my own tutorials: continuing to add options for those who fork this repository.
 
 
 ## 🎬 Tutorials
