@@ -22,6 +22,8 @@ import {
     jenkins,
     cloudagnostic,
     indigogardencinemaclub,
+    lightson,
+    traxy,
     travelers,
     terraform,
   } from "../assets";
@@ -337,7 +339,7 @@ import {
     {
       name: "Indigo Garden Cinema Club",
       description:
-        "A streaming platform to give a bigger cut to up and coming indie filmmakers.",
+        "In Progress: A streaming platform to give a bigger cut to up and coming indie filmmakers.",
       tags: [
         {
           name: "nextjs",
@@ -355,10 +357,76 @@ import {
           name: "terraform",
           color: "terraform-text-gradient",
         },
+        {
+          name: "docker",
+          color: "docker-text-gradient"
+        }
       ],
       image: indigogardencinemaclub,
       source_code_link: "https://github.com/The-Community-A-Coding-Cohort/Indigo-Garden-Club",
     },
+    {
+      name: "LightsOn",
+      description:
+        "Play around with my Phillips Hue light and see them change after 4 seconds.",
+      tags: [
+        {
+          name: "python",
+          color: "python-text-gradient",
+        },
+        {
+          name: "fast api",
+          color: "fast-api-text-gradient",
+        },
+        {
+          name: "google app engine",
+          color: "google-app-engine-text-gradient",
+        },
+        {
+          name: "flask",
+          color: "flask-text-gradient",
+        },
+        {
+          name: "cloudflare",
+          color: "cloudflare-text-gradient",
+        },
+        {
+          name: "docker",
+          color: "docker-text-gradient"
+        }
+      ],
+      image: lightson,
+      source_code_link: "https://github.com/zwingthomas/LightsOn",
+    },
+    {
+      name: "Traxy",
+      description:
+        "In Progress: A full-stack web app to track your habits and share them with your friends.",
+      tags: [
+        {
+          name: "python",
+          color: "jenkins-text-gradient",
+        },
+        {
+          name: "fast api",
+          color: "ansible-text-gradient",
+        },
+        {
+          name: "google app engine",
+          color: "google-app-engine-text-gradient",
+        },
+        {
+          name: "flask",
+          color: "flask-text-gradient",
+        },
+        {
+          name: "postgres",
+          color: "postgres-text-gradient",
+        }
+      ],
+      image: traxy,
+      source_code_link: "https://github.com/zwingthomas/traxy",
+    }
   ];
   
   export { services, technologies, experiences, testimonials, projects };

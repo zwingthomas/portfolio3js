@@ -222,6 +222,27 @@
   -webkit-text-fill-color: transparent;
 }
 
+.google-app-engine-text-gradient {
+  background: #34A853; /* fallback */
+  background: -webkit-linear-gradient(
+    45deg,
+    #34A853 0%,   /* green */
+    #EA4335 35%,  /* red   */
+    #FBBC05 70%,  /* yellow */
+    #4285F4 100%  /* blue  */
+  );
+  background:         linear-gradient(
+    45deg,
+    #34A853 0%,
+    #EA4335 35%,
+    #FBBC05 70%,
+    #4285F4 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ───── Web / CSS Frameworks ───── */
 .nextjs-text-gradient {
   /* dark-to-light gradient inside the glyphs */
@@ -245,11 +266,69 @@
   -webkit-text-fill-color: transparent;
 }
 
+.fast-api-text-gradient {
+  background: #67E8F9;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #009688, #67E8F9);
+  background:         linear-gradient(to top, #009688, #67E8F9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+  
+.flask-text-gradient {
+  background: #8A2BE2;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #4B0082, #8A2BE2);
+  background:         linear-gradient(to top, #4B0082, #8A2BE2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ───── Networking ───── */
 .dns-text-gradient {
   background: #7dd3fc;
   background: -webkit-linear-gradient(to top, #2563eb, #7dd3fc);
   background:         linear-gradient(to top, #2563eb, #7dd3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cloudflare-text-gradient {
+  background: #F38020;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #000000, #F38020);
+  background:         linear-gradient(to top, #000000, #F38020);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Languages ───── */
+
+.python-text-gradient {
+  background: #FFD343;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #306998, #FFD343);
+  background:         linear-gradient(to top, #306998, #FFD343);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Databases ───── */
+.postgres-text-gradient {
+  background: #336791;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #2B3E50, #336791);
+  background:         linear-gradient(to top, #2B3E50, #336791);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Containerization ───── */
+.docker-text-gradient {
+  background: #0DB7ED;                        /* fallback */
+  background: -webkit-linear-gradient(to top, #2496ED, #0DB7ED);
+  background:         linear-gradient(to top, #2496ED, #0DB7ED);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -266,6 +345,8 @@
   animation: mulShdSpin 1.1s infinite ease;
   transform: translateZ(0);
 }
+
+
 
 @keyframes mulShdSpin {
   0%,
