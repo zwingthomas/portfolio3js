@@ -29,6 +29,8 @@ import travelers from "./company/travelers.png";
 import indigogardencinemaclub from "./projects/indigogardencinemaclub.png";
 import cloudagnostic from "./projects/cloudagnostic.png";
 import jenkins from "./projects/jenkins.png";
+import lightson from "./projects/lightson.png";
+import traxy from "./projects/traxy.png";
 
 export {
   backend,
@@ -59,4 +61,6 @@ export {
   indigogardencinemaclub,
   jenkins,
   cloudagnostic,
+  lightson,
+  traxy
 };
