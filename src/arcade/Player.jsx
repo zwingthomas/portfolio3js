@@ -17,7 +17,7 @@ import { clampPitch } from './touchMath';
 //
 // All per-frame math reuses preallocated THREE temporaries to avoid GC churn.
 
-export default function Player({ onLockChange, touchMode = false, reachDistance = 3.2, throwImpulse = 14 }) {
+export default function Player({ onLockChange, touchMode = false, paused = false, reachDistance = 3.2, throwImpulse = 14 }) {
   const bodyRef = useRef(null);
   const lockRef = useRef(null);
   const { camera } = useThree();
@@ -29,6 +29,10 @@ export default function Player({ onLockChange, touchMode = false, reachDistance 
   const grounded = useRef(false);
   const wantJump = useRef(false);
   const isLocked = useRef(false);
+  // When a full-screen game (e.g. PULSE) is open, the world is frozen: input is
+  // ignored and the avatar is damped to a stop so arrow-key play can't drive
+  // movement behind the overlay. Read via ref so handlers don't re-subscribe.
+  const pausedRef = useRef(paused);
 
   // Manual look state for touch mode (no pointer lock on mobile). Yaw/pitch in
   // radians, applied to the camera each frame via a YXZ euler.
@@ -50,9 +54,13 @@ export default function Player({ onLockChange, touchMode = false, reachDistance 
 
   const config = PLAYER_CONFIG;
 
+  // keep the paused ref current without re-running the input effect.
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
+
   // ---- pointer lock + E/throw input (window-level, cleaned up on unmount) ----
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (pausedRef.current) return; // world frozen while a game overlay is open
       if (e.code === 'KeyE') {
         e.preventDefault();
         // toggle: drop if holding, otherwise try to pick up nearest in reach.
@@ -70,6 +78,7 @@ export default function Player({ onLockChange, touchMode = false, reachDistance 
     };
 
     const handleMouseDown = (e) => {
+      if (pausedRef.current) return; // world frozen while a game overlay is open
       if (e.button !== 0) return; // left click only
       if (!isLocked.current) return; // ignore the click that grabs the lock
       if (held.getHeld()) {
@@ -107,6 +116,13 @@ export default function Player({ onLockChange, touchMode = false, reachDistance 
   useFrame(() => {
     const body = bodyRef.current;
     if (!body) return;
+
+    // frozen while a game overlay is open: damp to a stop, ignore all input.
+    if (pausedRef.current) {
+      const lv = body.linvel();
+      body.setLinvel({ x: lv.x * 0.6, y: lv.y, z: lv.z * 0.6 }, true);
+      return;
+    }
 
     const keys = getKeys();
     const t = body.translation();

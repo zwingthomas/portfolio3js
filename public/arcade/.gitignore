@@ -1,0 +1,12 @@
+# Asset-slot drop zone — ENFORCES the ASSETS.md promise.
+#
+# Everything under public/arcade/** is a licensable / copyrightable drop-in slot
+# (music, cover art, character models, SFX) loaded at RUNTIME with a graceful
+# fallback. The repo must ship NONE of these files. This nested .gitignore makes
+# that guarantee real: a stray `git add .` after the owner drops, say,
+# rhythm-song-1.mp3 cannot accidentally stage/commit/redistribute it.
+#
+# Lives here (not the owner-owned root .gitignore) on purpose. Keep this file
+# tracked so the directory + the rule persist even when no slots are filled.
+*
+!.gitignore

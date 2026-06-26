@@ -76,12 +76,16 @@ function SpawnPad() {
 // The Traxy kiosk: a glowing pillar + label. Pressing E nearby OR clicking it
 // opens https://traxy.app in a new tab (noopener). We watch player proximity
 // each frame via the camera position and listen for E.
-function TraxyKiosk({ position = [6, 0, -2] }) {
+function TraxyKiosk({ position = [6, 0, -2], paused = false }) {
   const groupRef = useRef(null);
   const { camera } = useThree();
   const near = useRef(false);
   const [hovered, setHovered] = useState(false);
   const tmp = useMemo(() => new THREE.Vector3(...position), [position]);
+  // Don't react to world input (E / proximity open) while a full-screen game
+  // overlay owns the screen. Read via ref so the listener isn't re-subscribed.
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   const open = () => {
     try {
@@ -93,7 +97,7 @@ function TraxyKiosk({ position = [6, 0, -2] }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.code === 'KeyE' && near.current) open();
+      if (e.code === 'KeyE' && near.current && !pausedRef.current) open();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -153,7 +157,7 @@ const THROWABLES = [
   { kind: 'ball', position: [-2.5, 1.2, 4], color: '#ff8a3b' },
 ];
 
-export default function Hub({ onActivateCabinet }) {
+export default function Hub({ onActivateCabinet, paused = false }) {
   return (
     <group>
       {/* lights: moody synthwave key + neon fills */}
@@ -192,10 +196,11 @@ export default function Hub({ onActivateCabinet }) {
           position={c.position}
           rotation={c.rotation}
           onActivate={onActivateCabinet}
+          paused={paused}
         />
       ))}
 
-      <TraxyKiosk position={[7, 0, 2]} />
+      <TraxyKiosk position={[7, 0, 2]} paused={paused} />
 
       {THROWABLES.map((p, i) => (
         <Throwable key={i} kind={p.kind} position={p.position} color={p.color} />

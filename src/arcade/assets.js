@@ -38,7 +38,23 @@ export const ASSET_SLOTS = {
     ambience: pub('arcade/audio/ambience.ogg'),
     pickup: pub('arcade/audio/pickup.ogg'),
     throw: pub('arcade/audio/throw.ogg'),
+    // M3 PULSE cabinet tracks. ALL optional — empty slots fall back to a
+    // generated WebAudio metronome/tone so judgments still work (see
+    // games/pulseAudio.js + ASSETS.md M3). Track 1 is the primary; the encore
+    // plays it reversed; tracks 2/3 unlock progressively (also reversed).
+    rhythm: [
+      pub('arcade/audio/rhythm-song-1.mp3'),
+      pub('arcade/audio/rhythm-song-2.mp3'),
+      pub('arcade/audio/rhythm-song-3.mp3'),
+    ],
   },
+  // Optional hand-authored beatmaps for the PULSE tracks. Absent → the engine
+  // auto-generates a deterministic fixed-BPM chart (see games/pulseEngine.js).
+  charts: [
+    pub('arcade/charts/rhythm-song-1.json'),
+    pub('arcade/charts/rhythm-song-2.json'),
+    pub('arcade/charts/rhythm-song-3.json'),
+  ],
 };
 
 // Returns a tiny <audio>-style player that is safe to call even when the asset

@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
+import { Suspense, lazy, useState, useEffect, useCallback, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { KeyboardControls, Html, useProgress } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
@@ -9,6 +9,10 @@ import Player from './Player';
 import Hub from './Hub';
 import TouchControls from './TouchControls';
 import ArcadeLoader from './ArcadeLoader';
+
+// Game modules are lazy-loaded so they never bloat the initial portfolio paint;
+// they only fetch once the player actually enters a cabinet.
+const PulseGame = lazy(() => import('./games/PulseGame'));
 
 // ===========================================================================
 // ArcadeExperience — Milestone-1 explorable 3D hub.
@@ -45,28 +49,48 @@ export default function ArcadeExperience({ onExit }) {
   // no mouse/pointer-lock, so we show on-screen controls and manual look.
   const [touchMode] = useState(() => isCoarsePointer());
 
+  // Which cabinet game (if any) is currently full-screen. null = roaming the
+  // hub. Read via ref in the window-level Esc handler so it can route the press
+  // (close the game) without re-subscribing the listener every render.
+  const [activeGame, setActiveGame] = useState(null);
+  const activeGameRef = useRef(activeGame);
+  activeGameRef.current = activeGame;
+
   // Start every (re)entry with a neutral touch-input state.
   useEffect(() => {
     resetTouchInput();
   }, []);
 
-  // Esc exits the whole experience (pointer-lock also releases on Esc; we still
-  // give an explicit exit). We listen at window level and clean up on unmount.
+  // Esc routing (single owner): if a cabinet game is open, the first Esc closes
+  // the GAME and restores the world; otherwise Esc exits the whole experience.
+  // (pointer-lock also releases on Esc; we still give an explicit exit.)
   useEffect(() => {
     const onKey = (e) => {
-      if (e.code === 'Escape') {
-        // Let the browser release pointer lock first; exit on the same press.
-        if (onExit) onExit();
+      if (e.code !== 'Escape') return;
+      if (activeGameRef.current) {
+        setActiveGame(null); // close the game, stay in the world
+        return;
       }
+      if (onExit) onExit();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onExit]);
 
   const handleActivateCabinet = useCallback((name) => {
-    // M1: cabinets are placeholders. Future milestones launch the game here.
+    // PULSE (M3) launches a full-screen rhythm game. Others are still
+    // placeholders until their milestones land.
+    if (name === 'PULSE') {
+      // free the cursor for the game's UI / tap-lanes; the world re-locks on
+      // click after the game closes.
+      try { document.exitPointerLock?.(); } catch { /* ignore */ }
+      setActiveGame('PULSE');
+      return;
+    }
     console.log(`[arcade] cabinet activated: ${name} (game launches in a later milestone)`);
   }, []);
+
+  const handleCloseGame = useCallback(() => setActiveGame(null), []);
 
   // Stable identities so the loader's scene-ready beacon + dismiss backstop are
   // wired exactly once (an inline arrow would re-fire / restart them on every
@@ -97,8 +121,8 @@ export default function ArcadeExperience({ onExit }) {
             <fog attach="fog" args={['#05010f', 16, 40]} />
             <Suspense fallback={<CanvasLoader />}>
               <Physics gravity={[0, -18, 0]}>
-                <Hub onActivateCabinet={handleActivateCabinet} />
-                <Player onLockChange={setLocked} touchMode={touchMode} />
+                <Hub onActivateCabinet={handleActivateCabinet} paused={activeGame != null} />
+                <Player onLockChange={setLocked} touchMode={touchMode} paused={activeGame != null} />
                 {/* bridge held-state from the per-frame system into React for HUD.
                     Mounted inside provider so it can subscribe. */}
                 <HeldStateBridge onChange={setHolding} />
@@ -110,9 +134,16 @@ export default function ArcadeExperience({ onExit }) {
           </Canvas>
 
           <Hud locked={locked} holding={holding} onExit={onExit} touchMode={touchMode} />
-          {touchMode && <TouchControls />}
+          {touchMode && !activeGame && <TouchControls />}
           {showLoader && (
             <ArcadeLoader ready={sceneReady} onHidden={handleLoaderHidden} />
+          )}
+          {/* full-screen cabinet games (lazy). Mounted as a sibling overlay, like
+              the loader — never edits the owner-owned src/App.jsx. */}
+          {activeGame === 'PULSE' && (
+            <Suspense fallback={null}>
+              <PulseGame onExit={handleCloseGame} />
+            </Suspense>
           )}
         </HeldObjectProvider>
       </KeyboardControls>

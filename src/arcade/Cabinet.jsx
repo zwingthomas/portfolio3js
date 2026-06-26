@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Text } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
 
 // Reusable placeholder arcade cabinet built from primitives: a body box, an
 // angled "screen" plane that glows, a marquee with the (ORIGINAL) game name,
 // and a short tagline. Solid (fixed RigidBody) so the player collides with it.
 //
-// onActivate fires when the player is within `activateRadius` and presses E or
-// clicks the screen. The hub wires this to a console.log for now; future
-// milestones swap it for the real game launcher.
+// onActivate fires when the player is within `activateRadius` and presses E, or
+// clicks the screen. E-proximity is the reliable desktop path (clicking meshes
+// while pointer-locked is flaky); it mirrors the Traxy kiosk's proximity gate.
 
 export default function Cabinet({
   position = [0, 0, 0],
@@ -17,14 +19,53 @@ export default function Cabinet({
   tagline = '',
   color = '#1b1140',
   glow = '#ff5cf4',
+  activateRadius = 3.4,
+  paused = false,
   onActivate,
 }) {
   const [hovered, setHovered] = useState(false);
+  const [near, setNear] = useState(false);
+  const { camera } = useThree();
+  const nearRef = useRef(false);
+  const worldPos = useMemo(() => new THREE.Vector3(...position), [position]);
+  // Don't re-fire activation from world input while a game overlay already owns
+  // the screen. Read via ref so the keydown listener isn't re-subscribed.
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+
+  const activate = () => {
+    if (onActivate) onActivate(name);
+  };
 
   const handleActivate = (e) => {
     if (e && e.stopPropagation) e.stopPropagation();
-    if (onActivate) onActivate(name);
+    if (pausedRef.current) return;
+    activate();
   };
+
+  // Press E while standing near the cabinet to enter it.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.code === 'KeyE' && nearRef.current && !pausedRef.current) activate();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // `activate` reads the latest onActivate/name via closure each render is not
+    // needed: name is stable per cabinet and onActivate is memoized in the hub.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Proximity check each frame; lift into React only when it flips (for the
+  // hint label + screen glow) to avoid per-frame re-renders.
+  useFrame(() => {
+    const isNear = camera.position.distanceTo(worldPos) < activateRadius;
+    if (isNear !== nearRef.current) {
+      nearRef.current = isNear;
+      setNear(isNear);
+    }
+  });
+
+  const screenHot = hovered || near;
 
   return (
     <group position={position} rotation={rotation}>
@@ -53,7 +94,7 @@ export default function Cabinet({
         <meshStandardMaterial
           color="#05010f"
           emissive={glow}
-          emissiveIntensity={hovered ? 1.4 : 0.7}
+          emissiveIntensity={screenHot ? 1.4 : 0.7}
           roughness={0.2}
         />
       </mesh>
@@ -83,6 +124,21 @@ export default function Cabinet({
           maxWidth={1.0}
         >
           {tagline}
+        </Text>
+      ) : null}
+
+      {/* proximity hint: "press E to play" floats above when the player is near */}
+      {near ? (
+        <Text
+          position={[0, 2.68, 0.46]}
+          fontSize={0.11}
+          color="#bfe9ff"
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.008}
+          outlineColor="#000000"
+        >
+          press E to play
         </Text>
       ) : null}
 
