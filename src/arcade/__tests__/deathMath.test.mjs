@@ -22,11 +22,13 @@ import {
   THREAT_BASE_SPEED,
   THREAT_MAX_SPEED,
   THREAT_CATCH_RADIUS,
+  THREAT_CATCH_VERTICAL,
   threatSpeed,
   distanceXZ,
   steerToward,
   headingTo,
   withinCatchRadius,
+  caught,
   clampToArena,
 } from '../deathMath.js';
 
@@ -114,6 +116,9 @@ test('threatSpeed ramps from base toward the cap and never exceeds it', () => {
   assert.ok(threatSpeed(20) > threatSpeed(10));
   assert.equal(threatSpeed(100000), THREAT_MAX_SPEED); // saturates at the cap
   assert.ok(THREAT_BASE_SPEED < 6, 'base must be slower than the player run speed');
+  // positional params (no per-frame options object): custom base/ramp/cap apply
+  assert.equal(threatSpeed(10, 1, 0.5, 99), 6); // 1 + 0.5*10, high cap
+  assert.equal(threatSpeed(100, 1, 0.5, 3), 3); // capped at the 4th arg
 });
 
 test('distanceXZ ignores Y (both stand on the floor)', () => {
@@ -165,6 +170,21 @@ test('withinCatchRadius matches an XZ disc of THREAT_CATCH_RADIUS', () => {
   assert.ok(!withinCatchRadius(a, { x: 2, y: 0, z: 0 })); // 2 > 1.2
   assert.ok(withinCatchRadius(a, { x: THREAT_CATCH_RADIUS, y: 0, z: 0 })); // boundary inclusive
   assert.ok(!withinCatchRadius(a, { x: 3, y: 0, z: 0 }, 0.5)); // custom radius
+});
+
+test('caught requires BOTH XZ overlap AND comparable height (mezzanine is safe)', () => {
+  const hunter = { x: 0, y: 1.2, z: 0 }; // floor-locked threat (BODY_Y)
+  // floor-standing player overhead (camera y≈1.95): within both gates -> caught
+  assert.ok(caught(hunter, { x: 0.5, y: 1.95, z: 0.5 }));
+  // mid-jump on the floor (camera y≈3.0): dy=1.8 < 2.0 -> still caught
+  assert.ok(caught(hunter, { x: 0.3, y: 3.0, z: 0 }));
+  // up on the ~3 m mezzanine (camera y≈4.95): dy=3.75 > 2.0 -> SAFE despite XZ overlap
+  assert.ok(!caught(hunter, { x: 0, y: 4.95, z: 0 }));
+  // far away horizontally but same height -> not caught
+  assert.ok(!caught(hunter, { x: 5, y: 1.2, z: 0 }));
+  // vertical gate is symmetric (player below the threat)
+  assert.ok(!caught(hunter, { x: 0, y: 1.2 - (THREAT_CATCH_VERTICAL + 0.5), z: 0 }));
+  assert.equal(THREAT_CATCH_VERTICAL, 2.0);
 });
 
 test('clampToArena keeps a coordinate inside the room half-extent', () => {

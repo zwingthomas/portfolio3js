@@ -19,6 +19,7 @@ const PROMPT_DELAY_MS = 1100; // when the RESPAWN affordance appears
 export default function DefeatOverlay({ onRespawn }) {
   const [artOk, setArtOk] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
+  const rootRef = useRef(null);
   const btnRef = useRef(null);
   const stingRef = useRef(null);
   const doneRef = useRef(false);
@@ -46,6 +47,11 @@ export default function DefeatOverlay({ onRespawn }) {
     const sting = createSilentAudio(ASSET_SLOTS.audio.defeatSting, { volume: 0.6 });
     stingRef.current = sting;
     sting.play();
+
+    // Move focus into the modal immediately on death (it's aria-modal) so the
+    // defeat is announced and keyboard focus leaves the now-frozen world; the
+    // showPrompt effect below advances focus to the RESPAWN button at ~1.1s.
+    try { rootRef.current?.focus(); } catch { /* ignore */ }
 
     const promptT = setTimeout(() => setShowPrompt(true), PROMPT_DELAY_MS);
     const autoT = setTimeout(respawn, AUTO_RESPAWN_MS);
@@ -81,9 +87,11 @@ export default function DefeatOverlay({ onRespawn }) {
 
   return (
     <div
+      ref={rootRef}
       role="alertdialog"
       aria-modal="true"
       aria-label="You were downed. Respawn to continue."
+      tabIndex={-1}
       style={{
         position: 'fixed',
         inset: 0,

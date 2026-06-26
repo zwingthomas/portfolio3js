@@ -1,18 +1,16 @@
 import { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { RigidBody, CapsuleCollider } from '@react-three/rapier';
-import * as THREE from 'three';
 import SafeModel from './SafeModel';
 import { ASSET_SLOTS } from './assets';
 import { usePlayerState } from './usePlayerState';
 import {
   THREAT_SPAWN_MS,
-  THREAT_CATCH_RADIUS,
   threatShouldSpawn,
   threatSpeed,
   steerToward,
   headingTo,
-  withinCatchRadius,
+  caught,
   clampToArena,
 } from './deathMath';
 
@@ -197,9 +195,10 @@ export default function Minotaur({ paused = false }) {
       s.pos.z = clampToArena(s.next.z, ARENA_HALF);
       s.pos.y = BODY_Y;
 
-      // Catch → instant down. The defeat flow (overlay + respawn) is driven by
-      // usePlayerState's `dead` latch bridged into React in index.jsx.
-      if (withinCatchRadius(s.pos, camera.position, THREAT_CATCH_RADIUS)) {
+      // Catch → instant down. Gated in BOTH XZ and height so the floor-bound
+      // hunter can't down a player up on the mezzanine. The defeat flow (overlay
+      // + respawn) is driven by usePlayerState's `dead` latch bridged in index.jsx.
+      if (caught(s.pos, camera.position)) {
         player.kill();
       }
     }

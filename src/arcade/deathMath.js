@@ -74,10 +74,18 @@ export function threatShouldSpawn(elapsedMs, spawnMs = THREAT_SPAWN_MS) {
 export const THREAT_BASE_SPEED = 4.0; // m/s at first lock-on (player run = 6)
 export const THREAT_MAX_SPEED = 5.6; // m/s ceiling after a sustained chase
 export const THREAT_CATCH_RADIUS = 1.2; // XZ distance at which it grabs you
+// Vertical overlap required for a catch: a floor-locked hunter (y≈1.2) catches a
+// floor-standing player (camera y≈1.95, even mid-jump ≈3.0) but NOT one up on
+// the ~3 m mezzanine (camera y≈4.95) — so the ledge stays a real refuge.
+export const THREAT_CATCH_VERTICAL = 2.0;
 
+// Positional params (NOT a `{}`-default options object): this runs every pursuit
+// frame, so the omitted-arg path must allocate nothing (HARD zero-alloc gate).
 export function threatSpeed(
   pursuitSeconds,
-  { base = THREAT_BASE_SPEED, ramp = 0.05, cap = THREAT_MAX_SPEED } = {},
+  base = THREAT_BASE_SPEED,
+  ramp = 0.05,
+  cap = THREAT_MAX_SPEED,
 ) {
   const s = base + ramp * (pursuitSeconds > 0 ? pursuitSeconds : 0);
   return s < cap ? s : cap;
@@ -122,6 +130,20 @@ export function withinCatchRadius(a, b, radius = THREAT_CATCH_RADIUS) {
   const dx = a.x - b.x;
   const dz = a.z - b.z;
   return dx * dx + dz * dz <= radius * radius;
+}
+
+// A catch needs BOTH an XZ-disc overlap AND a comparable height: the floor-bound
+// hunter must not down a player standing up on the mezzanine directly above it.
+// Alloc-free — used in the per-frame pursuit loop.
+export function caught(
+  threatPos,
+  playerPos,
+  radius = THREAT_CATCH_RADIUS,
+  vertical = THREAT_CATCH_VERTICAL,
+) {
+  const dy = playerPos.y - threatPos.y;
+  if (dy > vertical || dy < -vertical) return false;
+  return withinCatchRadius(threatPos, playerPos, radius);
 }
 
 // Clamp a coordinate to the playable interior so the hunter never walks out
