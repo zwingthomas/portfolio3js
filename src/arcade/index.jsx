@@ -14,6 +14,7 @@ import ArcadeLoader from './ArcadeLoader';
 // they only fetch once the player actually enters a cabinet.
 const PulseGame = lazy(() => import('./games/PulseGame'));
 const GridlockGame = lazy(() => import('./games/GridlockGame'));
+const CascadeGame = lazy(() => import('./games/CascadeGame'));
 
 // ===========================================================================
 // ArcadeExperience — Milestone-1 explorable 3D hub.
@@ -79,10 +80,11 @@ export default function ArcadeExperience({ onExit }) {
   }, [onExit]);
 
   const handleActivateCabinet = useCallback((name) => {
-    // PULSE (M3) and GRIDLOCK (M4) launch full-screen cabinet games. Others are
-    // still placeholders until their milestones land. Each frees the cursor (so
-    // the game's UI / tap input works) and the world re-locks on click on exit.
-    if (name === 'PULSE' || name === 'GRIDLOCK') {
+    // PULSE (M3), GRIDLOCK (M4) and CASCADE (M5) launch full-screen cabinet
+    // games. Others are still placeholders until their milestones land. Each
+    // frees the cursor (so the game's UI / tap input works) and the world
+    // re-locks on click on exit.
+    if (name === 'PULSE' || name === 'GRIDLOCK' || name === 'CASCADE') {
       try { document.exitPointerLock?.(); } catch { /* ignore */ }
       setActiveGame(name);
       return;
@@ -148,6 +150,11 @@ export default function ArcadeExperience({ onExit }) {
           {activeGame === 'GRIDLOCK' && (
             <Suspense fallback={null}>
               <GridlockGame onExit={handleCloseGame} />
+            </Suspense>
+          )}
+          {activeGame === 'CASCADE' && (
+            <Suspense fallback={null}>
+              <CascadeGame onExit={handleCloseGame} />
             </Suspense>
           )}
         </HeldObjectProvider>

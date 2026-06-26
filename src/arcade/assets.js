@@ -42,6 +42,9 @@ export const ASSET_SLOTS = {
     // Empty slot → a synthesized descending mock sting (see games/gridlockAudio.js
     // + ASSETS.md M4). Never a real character's voice/laugh.
     mockLaugh: pub('arcade/audio/mock-laugh.mp3'),
+    // M5 CASCADE cabinet: ORIGINAL line-clear SFX. Empty slot → a synthesized
+    // rising arpeggio (see games/cascadeAudio.js + ASSETS.md M5). Original only.
+    stackClear: pub('arcade/audio/stack-clear.mp3'),
     // M3 PULSE cabinet tracks. ALL optional — empty slots fall back to a
     // generated WebAudio metronome/tone so judgments still work (see
     // games/pulseAudio.js + ASSETS.md M3). Track 1 is the primary; the encore
@@ -51,6 +54,12 @@ export const ASSET_SLOTS = {
       pub('arcade/audio/rhythm-song-2.mp3'),
       pub('arcade/audio/rhythm-song-3.mp3'),
     ],
+  },
+  textures: {
+    // M5 CASCADE cabinet: ORIGINAL bezel/sticker art framing the playfield.
+    // Empty slot → a procedural neon bezel drawn on the canvas (the default
+    // shipped state — see games/CascadeGame.jsx + ASSETS.md M5). Original only.
+    stackCabinet: pub('arcade/textures/stack-cabinet.png'),
   },
   // Optional hand-authored beatmaps for the PULSE tracks. Absent → the engine
   // auto-generates a deterministic fixed-BPM chart (see games/pulseEngine.js).

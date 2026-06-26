@@ -73,7 +73,7 @@ mesh and silence.
 | `public/arcade/audio/mock-laugh.mp3` | ORIGINAL mocking-laugh SFX on each failure | mp3 / ogg / wav | Silence (or short generated blip) |
 | `public/arcade/textures/city-lane.png` | Optional stylized road/lane texture (ORIGINAL) | png / webp / ktx2 | Solid/striped procedural material |
 
-## M5 — Stack cabinet ("STACKFALL" or similar; original falling-block puzzle)
+## M5 — Stack cabinet ("CASCADE"; original falling-block puzzle)
 Rendered in-world on the cabinet screen. **NOT an iframe to tetr.io** — tetr.io
 sets `X-Frame-Options`/CSP that block embedding, and embedding it violates their
 ToS. The cabinet art frames an original playfield.
