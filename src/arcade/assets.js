@@ -23,6 +23,15 @@ export const ASSET_SLOTS = {
     cabinet: pub('arcade/models/cabinet.glb'),
     kiosk: pub('arcade/models/kiosk.glb'),
   },
+  loader: {
+    // M2 loading animation. ALL optional — the loader runs a procedural,
+    // ORIGINAL "rage/opium"-aesthetic canvas animation and is silent when these
+    // slots are empty (the default shipped state). Original/parody art only:
+    // never a Ken Carson / Carti likeness or their music.
+    bg: pub('arcade/loader/bg.png'),
+    sprite: pub('arcade/loader/sprite.png'),
+    theme: pub('arcade/loader/theme.mp3'),
+  },
   audio: {
     // Ambient pad for the hub. Silence when missing — NEVER autoplay licensed
     // music, and never commit real song files (use original/CC0 audio only).
@@ -34,9 +43,15 @@ export const ASSET_SLOTS = {
 
 // Returns a tiny <audio>-style player that is safe to call even when the asset
 // is missing: a failed load simply makes play() a no-op. No autoplay.
+//
+// play() is NOT gated on a `canplaythrough` flag on purpose: a real track may
+// not have buffered yet when the caller fires play() (common over a network),
+// and gating would make it silently never play. Instead we attempt play()
+// whenever an element exists and swallow any rejection (autoplay/decoding
+// policy). The 'error' handler nulls `el` so a genuinely MISSING asset still
+// no-ops via the `if (!el)` guard — the silent fallback is preserved.
 export function createSilentAudio(url, { volume = 0.5, loop = false } = {}) {
   let el = null;
-  let ok = false;
   if (typeof Audio !== 'undefined' && url) {
     try {
       el = new Audio();
@@ -44,15 +59,14 @@ export function createSilentAudio(url, { volume = 0.5, loop = false } = {}) {
       el.loop = loop;
       el.volume = volume;
       el.preload = 'auto';
-      el.addEventListener('canplaythrough', () => { ok = true; }, { once: true });
-      el.addEventListener('error', () => { ok = false; el = null; });
+      el.addEventListener('error', () => { el = null; });
     } catch {
       el = null;
     }
   }
   return {
     play() {
-      if (!el || !ok) return; // silence fallback
+      if (!el) return; // silence fallback (no asset / unsupported)
       try {
         el.currentTime = 0;
         const p = el.play();

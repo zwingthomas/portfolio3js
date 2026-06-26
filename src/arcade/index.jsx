@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect, useCallback } from 'react';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { KeyboardControls, Html, useProgress } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
@@ -8,6 +8,7 @@ import { isCoarsePointer, resetTouchInput } from './touchInput';
 import Player from './Player';
 import Hub from './Hub';
 import TouchControls from './TouchControls';
+import ArcadeLoader from './ArcadeLoader';
 
 // ===========================================================================
 // ArcadeExperience — Milestone-1 explorable 3D hub.
@@ -35,6 +36,11 @@ function CanvasLoader() {
 export default function ArcadeExperience({ onExit }) {
   const [locked, setLocked] = useState(false);
   const [holding, setHolding] = useState(false);
+  // M2 loader: shown until the r3f scene commits AND the minimum on-screen time
+  // has elapsed. `sceneReady` is flipped by <ReadyBeacon> inside the Canvas
+  // Suspense boundary; `showLoader` keeps the overlay mounted until it fades.
+  const [sceneReady, setSceneReady] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
   // Decide once (on mount) whether to use the touch fallback. Coarse pointer =
   // no mouse/pointer-lock, so we show on-screen controls and manual look.
   const [touchMode] = useState(() => isCoarsePointer());
@@ -61,6 +67,12 @@ export default function ArcadeExperience({ onExit }) {
     // M1: cabinets are placeholders. Future milestones launch the game here.
     console.log(`[arcade] cabinet activated: ${name} (game launches in a later milestone)`);
   }, []);
+
+  // Stable identities so the loader's scene-ready beacon + dismiss backstop are
+  // wired exactly once (an inline arrow would re-fire / restart them on every
+  // re-render from setLocked / setHolding).
+  const handleSceneReady = useCallback(() => setSceneReady(true), []);
+  const handleLoaderHidden = useCallback(() => setShowLoader(false), []);
 
   return (
     <div
@@ -90,16 +102,36 @@ export default function ArcadeExperience({ onExit }) {
                 {/* bridge held-state from the per-frame system into React for HUD.
                     Mounted inside provider so it can subscribe. */}
                 <HeldStateBridge onChange={setHolding} />
+                {/* commits only once the Suspense subtree resolves → tells the
+                    loader the world is ready to reveal. */}
+                <ReadyBeacon onReady={handleSceneReady} />
               </Physics>
             </Suspense>
           </Canvas>
 
           <Hud locked={locked} holding={holding} onExit={onExit} touchMode={touchMode} />
           {touchMode && <TouchControls />}
+          {showLoader && (
+            <ArcadeLoader ready={sceneReady} onHidden={handleLoaderHidden} />
+          )}
         </HeldObjectProvider>
       </KeyboardControls>
     </div>
   );
+}
+
+// Rendered inside the Canvas Suspense boundary: it mounts only once the
+// suspended subtree has resolved and committed, which is our signal that the
+// world is ready to reveal behind the M2 loader. The effect fires exactly once
+// on that commit — onReady is read via ref so an unstable prop identity can't
+// re-fire it on later re-renders.
+function ReadyBeacon({ onReady }) {
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
+  useEffect(() => {
+    onReadyRef.current();
+  }, []);
+  return null;
 }
 
 // Tiny non-visual component that subscribes to the held-object system and lifts
