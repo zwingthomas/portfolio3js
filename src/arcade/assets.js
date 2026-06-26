@@ -38,6 +38,10 @@ export const ASSET_SLOTS = {
     ambience: pub('arcade/audio/ambience.ogg'),
     pickup: pub('arcade/audio/pickup.ogg'),
     throw: pub('arcade/audio/throw.ogg'),
+    // M4 GRIDLOCK cabinet: ORIGINAL "mocking laugh" SFX played on each failure.
+    // Empty slot → a synthesized descending mock sting (see games/gridlockAudio.js
+    // + ASSETS.md M4). Never a real character's voice/laugh.
+    mockLaugh: pub('arcade/audio/mock-laugh.mp3'),
     // M3 PULSE cabinet tracks. ALL optional — empty slots fall back to a
     // generated WebAudio metronome/tone so judgments still work (see
     // games/pulseAudio.js + ASSETS.md M3). Track 1 is the primary; the encore
