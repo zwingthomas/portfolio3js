@@ -59,6 +59,65 @@ function Room() {
   );
 }
 
+// A single solid neon block: fixed collider sized to the visible box. Used to
+// build the mezzanine + its stairs.
+function Block({ position, size, color = '#1b1140', edge = '#36d6ff', edgeIntensity = 0.9 }) {
+  const [w, h, d] = size;
+  return (
+    <group position={position}>
+      <RigidBody type="fixed" colliders={false}>
+        <CuboidCollider args={[w / 2, h / 2, d / 2]} />
+      </RigidBody>
+      <mesh castShadow receiveShadow>
+        <boxGeometry args={[w, h, d]} />
+        <meshStandardMaterial color={color} roughness={0.55} metalness={0.25} />
+      </mesh>
+      {/* emissive top trim so the climbable surface reads clearly */}
+      <mesh position={[0, h / 2 + 0.011, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[w * 0.96, d * 0.96]} />
+        <meshStandardMaterial color={edge} emissive={edge} emissiveIntensity={edgeIntensity} transparent opacity={0.35} />
+      </mesh>
+    </group>
+  );
+}
+
+// Mezzanine + stairs (M6): a climbable platform ~3 m up so the player can take
+// a "big drop" and feel fall damage. The 0.6 m steps are each jumpable (jump
+// apex ≈ 1.07 m). A sign warns of the drop. All boxes own fixed colliders.
+function FallLedge({ x = -10 }) {
+  const steps = [
+    { topY: 0.6, z: 4.5, w: 3.0, d: 1.6 },
+    { topY: 1.2, z: 5.8, w: 3.0, d: 1.6 },
+    { topY: 1.8, z: 7.1, w: 3.0, d: 1.6 },
+    { topY: 2.4, z: 8.4, w: 3.0, d: 1.6 },
+  ];
+  const platTop = 3.0;
+  return (
+    <group>
+      {steps.map((s, i) => (
+        <Block
+          key={i}
+          position={[x, s.topY - 0.2, s.z]}
+          size={[s.w, 0.4, s.d]}
+          edge={i % 2 ? '#ff5cf4' : '#36d6ff'}
+        />
+      ))}
+      {/* the mezzanine platform itself */}
+      <Block position={[x, platTop - 0.2, 10.5]} size={[4, 0.4, 4]} edge="#ffd23b" edgeIntensity={1.1} />
+      {/* low railing on the two outer edges only (the room-facing edges stay
+          open so you CAN walk off into the drop on purpose) */}
+      <Block position={[x - 1.9, platTop + 0.35, 10.5]} size={[0.2, 0.7, 4]} color="#241652" edge="#ff5cf4" />
+      <Block position={[x, platTop + 0.35, 12.4]} size={[4, 0.7, 0.2]} color="#241652" edge="#ff5cf4" />
+      <Text position={[x, platTop + 1.0, 10.5]} fontSize={0.26} color="#ffd23b" anchorX="center" anchorY="middle" outlineWidth={0.012} outlineColor="#000">
+        MEZZANINE
+      </Text>
+      <Text position={[x, platTop + 0.7, 10.5]} fontSize={0.13} color="#ff8a3b" anchorX="center" anchorY="middle">
+        mind the drop — falls hurt
+      </Text>
+    </group>
+  );
+}
+
 function SpawnPad() {
   return (
     <group position={[0, 0.03, 6]}>
@@ -186,6 +245,7 @@ export default function Hub({ onActivateCabinet, paused = false }) {
 
       <Room />
       <SpawnPad />
+      <FallLedge x={-10} />
 
       {CABINETS.map((c) => (
         <Cabinet

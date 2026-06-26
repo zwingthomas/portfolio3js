@@ -4,11 +4,14 @@ import { KeyboardControls, Html, useProgress } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import { CONTROLS_MAP, PLAYER_CONFIG } from './controls';
 import { HeldObjectProvider, useHeldObject } from './useHeldObject';
+import { PlayerStateProvider, usePlayerState } from './usePlayerState';
 import { isCoarsePointer, resetTouchInput } from './touchInput';
 import Player from './Player';
 import Hub from './Hub';
+import Minotaur from './Minotaur';
 import TouchControls from './TouchControls';
 import ArcadeLoader from './ArcadeLoader';
+import DefeatOverlay from './DefeatOverlay';
 
 // Game modules are lazy-loaded so they never bloat the initial portfolio paint;
 // they only fetch once the player actually enters a cabinet.
@@ -57,6 +60,13 @@ export default function ArcadeExperience({ onExit }) {
   const [activeGame, setActiveGame] = useState(null);
   const activeGameRef = useRef(activeGame);
   activeGameRef.current = activeGame;
+
+  // M6: latched true while the defeat overlay is up. Lifted out of the shared
+  // player-state store by <DeathLayer>; it freezes the world (paused) and gates
+  // the touch controls just like an open cabinet game does.
+  const [dead, setDead] = useState(false);
+  // The world is frozen whenever a cabinet game is open OR the player is dead.
+  const frozen = activeGame != null || dead;
 
   // Start every (re)entry with a neutral touch-input state.
   useEffect(() => {
@@ -112,51 +122,62 @@ export default function ArcadeExperience({ onExit }) {
     >
       <KeyboardControls map={CONTROLS_MAP}>
         <HeldObjectProvider>
-          <Canvas
-            shadows
-            dpr={[1, 1.8]}
-            camera={{ fov: 70, near: 0.1, far: 200, position: [0, PLAYER_CONFIG.eyeHeight, 8] }}
-            gl={{ antialias: true, powerPreference: 'high-performance' }}
-            style={{ width: '100%', height: '100%', cursor: 'crosshair', touchAction: 'none' }}
-          >
-            <color attach="background" args={['#05010f']} />
-            <fog attach="fog" args={['#05010f', 16, 40]} />
-            <Suspense fallback={<CanvasLoader />}>
-              <Physics gravity={[0, -18, 0]}>
-                <Hub onActivateCabinet={handleActivateCabinet} paused={activeGame != null} />
-                <Player onLockChange={setLocked} touchMode={touchMode} paused={activeGame != null} />
-                {/* bridge held-state from the per-frame system into React for HUD.
-                    Mounted inside provider so it can subscribe. */}
-                <HeldStateBridge onChange={setHolding} />
-                {/* commits only once the Suspense subtree resolves → tells the
-                    loader the world is ready to reveal. */}
-                <ReadyBeacon onReady={handleSceneReady} />
-              </Physics>
-            </Suspense>
-          </Canvas>
+          <PlayerStateProvider>
+            <Canvas
+              shadows
+              dpr={[1, 1.8]}
+              camera={{ fov: 70, near: 0.1, far: 200, position: [0, PLAYER_CONFIG.eyeHeight, 8] }}
+              gl={{ antialias: true, powerPreference: 'high-performance' }}
+              style={{ width: '100%', height: '100%', cursor: 'crosshair', touchAction: 'none' }}
+            >
+              <color attach="background" args={['#05010f']} />
+              <fog attach="fog" args={['#05010f', 16, 40]} />
+              <Suspense fallback={<CanvasLoader />}>
+                <Physics gravity={[0, -18, 0]}>
+                  <Hub onActivateCabinet={handleActivateCabinet} paused={frozen} />
+                  <Player onLockChange={setLocked} touchMode={touchMode} paused={frozen} />
+                  {/* M6 roaming threat: spawns after 15 min on-site, hunts the
+                      player, frozen while a cabinet game is open. Death/respawn is
+                      driven through the shared player-state store. */}
+                  <Minotaur paused={activeGame != null} />
+                  {/* bridge held-state from the per-frame system into React for HUD.
+                      Mounted inside provider so it can subscribe. */}
+                  <HeldStateBridge onChange={setHolding} />
+                  {/* commits only once the Suspense subtree resolves → tells the
+                      loader the world is ready to reveal. */}
+                  <ReadyBeacon onReady={handleSceneReady} />
+                </Physics>
+              </Suspense>
+            </Canvas>
 
-          <Hud locked={locked} holding={holding} onExit={onExit} touchMode={touchMode} />
-          {touchMode && !activeGame && <TouchControls />}
-          {showLoader && (
-            <ArcadeLoader ready={sceneReady} onHidden={handleLoaderHidden} />
-          )}
-          {/* full-screen cabinet games (lazy). Mounted as a sibling overlay, like
-              the loader — never edits the owner-owned src/App.jsx. */}
-          {activeGame === 'PULSE' && (
-            <Suspense fallback={null}>
-              <PulseGame onExit={handleCloseGame} />
-            </Suspense>
-          )}
-          {activeGame === 'GRIDLOCK' && (
-            <Suspense fallback={null}>
-              <GridlockGame onExit={handleCloseGame} />
-            </Suspense>
-          )}
-          {activeGame === 'CASCADE' && (
-            <Suspense fallback={null}>
-              <CascadeGame onExit={handleCloseGame} />
-            </Suspense>
-          )}
+            <Hud locked={locked} holding={holding} onExit={onExit} touchMode={touchMode} />
+            {/* M6 health bar + defeat overlay + respawn. <DeathLayer> lives in the
+                DOM (inside the provider) so it can both lift `dead` into React and
+                call respawn(). Hidden while a cabinet game owns the screen. */}
+            {!frozen && <HealthBar />}
+            <DeathLayer onDeadChange={setDead} suppressed={activeGame != null} />
+            {touchMode && !frozen && <TouchControls />}
+            {showLoader && (
+              <ArcadeLoader ready={sceneReady} onHidden={handleLoaderHidden} />
+            )}
+            {/* full-screen cabinet games (lazy). Mounted as a sibling overlay, like
+                the loader — never edits the owner-owned src/App.jsx. */}
+            {activeGame === 'PULSE' && (
+              <Suspense fallback={null}>
+                <PulseGame onExit={handleCloseGame} />
+              </Suspense>
+            )}
+            {activeGame === 'GRIDLOCK' && (
+              <Suspense fallback={null}>
+                <GridlockGame onExit={handleCloseGame} />
+              </Suspense>
+            )}
+            {activeGame === 'CASCADE' && (
+              <Suspense fallback={null}>
+                <CascadeGame onExit={handleCloseGame} />
+              </Suspense>
+            )}
+          </PlayerStateProvider>
         </HeldObjectProvider>
       </KeyboardControls>
     </div>
@@ -187,6 +208,82 @@ function HeldStateBridge({ onChange }) {
     return unsub;
   }, [held, onChange]);
   return null;
+}
+
+// M6: bridges the shared `dead` latch into React (lifting it to ArcadeExperience
+// so the world freezes) and renders the defeat overlay with a respawn handler.
+// Lives in the DOM tree inside <PlayerStateProvider> so it can both subscribe
+// and call respawn().
+function DeathLayer({ onDeadChange, suppressed = false }) {
+  const player = usePlayerState();
+  const [dead, setDeadLocal] = useState(false);
+  const onDeadChangeRef = useRef(onDeadChange);
+  onDeadChangeRef.current = onDeadChange;
+
+  useEffect(() => {
+    const unsub = player.subscribe((_h, d) => {
+      setDeadLocal(d);
+      onDeadChangeRef.current?.(d);
+    });
+    return unsub;
+  }, [player]);
+
+  const handleRespawn = useCallback(() => player.respawn(), [player]);
+
+  if (!dead || suppressed) return null;
+  return <DefeatOverlay onRespawn={handleRespawn} />;
+}
+
+// M6 health readout: a small DOM bar fed by the shared player-state store.
+function HealthBar() {
+  const player = usePlayerState();
+  const max = player.getMaxHealth();
+  const [hp, setHp] = useState(() => player.getHealth());
+  useEffect(() => {
+    const unsub = player.subscribe((h) => setHp(h));
+    return unsub;
+  }, [player]);
+
+  const pct = Math.max(0, Math.min(100, (hp / max) * 100));
+  const color = pct > 50 ? '#36ff9e' : pct > 25 ? '#ffd23b' : '#ff3b6b';
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: 16,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 2,
+        pointerEvents: 'none',
+        fontFamily: 'monospace',
+        textAlign: 'center',
+      }}
+    >
+      <div style={{ color: '#bfe9ff', fontSize: 10, letterSpacing: '0.2em', marginBottom: 4, textShadow: '0 0 6px #000' }}>
+        VITALS
+      </div>
+      <div
+        style={{
+          width: 180,
+          height: 12,
+          borderRadius: 6,
+          border: '1px solid #2a1d66',
+          background: 'rgba(10,4,32,0.7)',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            width: `${pct}%`,
+            height: '100%',
+            background: color,
+            boxShadow: `0 0 8px ${color}`,
+            transition: 'width 180ms linear, background 180ms linear',
+          }}
+        />
+      </div>
+    </div>
+  );
 }
 
 // --------------------------------- HUD -------------------------------------

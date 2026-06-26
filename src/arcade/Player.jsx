@@ -5,8 +5,10 @@ import { RigidBody, CapsuleCollider, useRapier } from '@react-three/rapier';
 import * as THREE from 'three';
 import { Controls, PLAYER_CONFIG } from './controls';
 import { useHeldObject } from './useHeldObject';
+import { usePlayerState } from './usePlayerState';
 import { touchInput } from './touchInput';
 import { clampPitch } from './touchMath';
+import { fallDamage } from './deathMath';
 
 // First-person player: a dynamic capsule RigidBody with locked rotations.
 // - WASD moves relative to camera yaw.
@@ -23,12 +25,16 @@ export default function Player({ onLockChange, touchMode = false, paused = false
   const { camera } = useThree();
   const { rapier, world } = useRapier();
   const held = useHeldObject();
+  const player = usePlayerState();
   const [, getKeys] = useKeyboardControls();
 
   // grounded flag + jump latch live in refs (read inside useFrame).
   const grounded = useRef(false);
   const wantJump = useRef(false);
   const isLocked = useRef(false);
+  // Peak downward speed observed while airborne — converted to fall damage on
+  // the landing frame, then reset (see deathMath.fallDamage).
+  const peakDown = useRef(0);
   // When a full-screen game (e.g. PULSE) is open, the world is frozen: input is
   // ignored and the avatar is damped to a stop so arrow-key play can't drive
   // movement behind the overlay. Read via ref so handlers don't re-subscribe.
@@ -117,7 +123,19 @@ export default function Player({ onLockChange, touchMode = false, paused = false
     const body = bodyRef.current;
     if (!body) return;
 
-    // frozen while a game overlay is open: damp to a stop, ignore all input.
+    // Respawn (M6): consumed once after a defeat. Hard-reset the body back to
+    // the spawn pad with zero velocity so the player drops in cleanly. Done
+    // BEFORE the paused guard so it still applies on the frame death clears.
+    if (player.consumeRespawn()) {
+      const sp = config.spawn;
+      body.setTranslation({ x: sp[0], y: sp[1], z: sp[2] }, true);
+      body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+      body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      peakDown.current = 0;
+    }
+
+    // frozen while a game overlay is open OR the defeat screen is up: damp to a
+    // stop, ignore all input.
     if (pausedRef.current) {
       const lv = body.linvel();
       body.setLinvel({ x: lv.x * 0.6, y: lv.y, z: lv.z * 0.6 }, true);
@@ -191,6 +209,19 @@ export default function Player({ onLockChange, touchMode = false, paused = false
     }
 
     const lv = body.linvel();
+
+    // Fall damage (M6): track the peak downward speed while airborne; on the
+    // landing frame, convert it to damage (0 below the safe threshold) and reset.
+    if (grounded.current) {
+      if (peakDown.current > 0) {
+        const dmg = fallDamage(peakDown.current);
+        if (dmg > 0) player.damage(dmg);
+        peakDown.current = 0;
+      }
+    } else if (-lv.y > peakDown.current) {
+      peakDown.current = -lv.y;
+    }
+
     // magnitude (<=1) lets a partial joystick push walk slowly; keyboard input
     // (length 1, or ~1.41 on diagonals) clamps to 1 → full speed as before.
     const inputMag = Math.min(tmp.move.length(), 1);

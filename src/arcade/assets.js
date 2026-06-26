@@ -22,6 +22,9 @@ export const ASSET_SLOTS = {
     hub: pub('arcade/models/hub.glb'),
     cabinet: pub('arcade/models/cabinet.glb'),
     kiosk: pub('arcade/models/kiosk.glb'),
+    // M6 roaming threat. Empty slot → a primitive horned-capsule mesh built in
+    // Minotaur.jsx. ORIGINAL model only — never a real character (see ASSETS.md M6).
+    minotaur: pub('arcade/models/minotaur.glb'),
   },
   loader: {
     // M2 loading animation. ALL optional — the loader runs a procedural,
@@ -45,6 +48,9 @@ export const ASSET_SLOTS = {
     // M5 CASCADE cabinet: ORIGINAL line-clear SFX. Empty slot → a synthesized
     // rising arpeggio (see games/cascadeAudio.js + ASSETS.md M5). Original only.
     stackClear: pub('arcade/audio/stack-clear.mp3'),
+    // M6 death: ORIGINAL defeat sting played once on death. Empty slot → silence
+    // (createSilentAudio no-ops). Never a real song/score (see ASSETS.md M6).
+    defeatSting: pub('arcade/audio/defeat-sting.mp3'),
     // M3 PULSE cabinet tracks. ALL optional — empty slots fall back to a
     // generated WebAudio metronome/tone so judgments still work (see
     // games/pulseAudio.js + ASSETS.md M3). Track 1 is the primary; the encore
@@ -60,6 +66,12 @@ export const ASSET_SLOTS = {
     // Empty slot → a procedural neon bezel drawn on the canvas (the default
     // shipped state — see games/CascadeGame.jsx + ASSETS.md M5). Original only.
     stackCabinet: pub('arcade/textures/stack-cabinet.png'),
+  },
+  defeat: {
+    // M6 grayscale defeat screen art (ORIGINAL — NOT GTA "Wasted"). Empty slot →
+    // a procedural grayscale vignette + original "DOWNED" text drawn in the DOM
+    // overlay (the default shipped state — see DefeatOverlay.jsx + ASSETS.md M6).
+    overlay: pub('arcade/defeat/overlay.png'),
   },
   // Optional hand-authored beatmaps for the PULSE tracks. Absent → the engine
   // auto-generates a deterministic fixed-BPM chart (see games/pulseEngine.js).
