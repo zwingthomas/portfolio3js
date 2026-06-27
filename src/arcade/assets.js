@@ -147,7 +147,17 @@ export async function assetExists(url) {
   if (!url || typeof fetch === 'undefined') return false;
   try {
     const res = await fetch(url, { method: 'HEAD' });
-    return res.ok;
+    if (!res.ok) return false;
+    // Reject SPA / dev-server fallbacks: a missing path often resolves to
+    // index.html with HTTP 200 + Content-Type: text/html (e.g. `vite preview`
+    // and many static hosts). That is NOT a real asset — treating it as one
+    // makes the GLTF loader try to parse HTML and log a noisy "Unexpected
+    // token '<'" error before the SafeModel boundary falls back. A genuine
+    // model/texture/audio asset is never served as HTML, so we treat an HTML
+    // response as "absent" and render the primitive fallback silently.
+    const type = res.headers.get('content-type') || '';
+    if (/^\s*text\/html/i.test(type)) return false;
+    return true;
   } catch {
     return false;
   }

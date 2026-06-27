@@ -1,3 +1,7 @@
+// MUST be first: patches troika-three-text so drei <Text> can construct on
+// three r0.175 (Object3D ctor assigns getter-only customDepthMaterial). Without
+// this, every <Text> throws and the arcade renders a black screen. See the file.
+import './troikaTextFix.js';
 import { Suspense, lazy, useState, useEffect, useCallback, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { KeyboardControls, Html, useProgress } from '@react-three/drei';
