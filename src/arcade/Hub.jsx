@@ -6,7 +6,9 @@ import * as THREE from 'three';
 import Cabinet from './Cabinet';
 import Throwable from './Throwable';
 import SafeModel from './SafeModel';
+import Cycle from './Cycle';
 import { ASSET_SLOTS } from './assets';
+import { GRASS_ZONES } from './cycleMath';
 
 const ROOM = { size: 28, wallH: 5, half: 14 };
 
@@ -127,6 +129,47 @@ function SpawnPad() {
       </mesh>
       <Text position={[0, 0.01, 1.3]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.3} color="#36ff9e" anchorX="center">
         SPAWN
+      </Text>
+    </group>
+  );
+}
+
+// M7 "tall grass": an ORIGINAL glowing neon-grass patch. Walking / riding into
+// one can trigger a NEON RUNNER grid-duel (the encounter watcher lives in
+// index.jsx; the zone geometry is the shared GRASS_ZONES in cycleMath.js). No
+// collider — you pass right through it. Blades are laid out deterministically
+// (golden-ratio spiral) so there's no per-frame work and no PRNG dependency.
+function TallGrass({ x, z, r }) {
+  const blades = useMemo(() => {
+    const arr = [];
+    const n = 20;
+    for (let i = 0; i < n; i++) {
+      const a = i * 2.399963; // golden angle — even, non-repeating spread
+      const rr = r * Math.sqrt((i + 0.5) / n) * 0.92;
+      arr.push({
+        bx: Math.cos(a) * rr,
+        bz: Math.sin(a) * rr,
+        h: 0.55 + ((i * 0.37) % 1) * 0.55,
+        tilt: (((i * 0.23) % 1) - 0.5) * 0.5,
+      });
+    }
+    return arr;
+  }, [r]);
+  return (
+    <group position={[x, 0, z]}>
+      {/* glowing ground disc marking the patch */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <circleGeometry args={[r, 40]} />
+        <meshStandardMaterial color="#0a2a16" emissive="#1f7a3a" emissiveIntensity={0.4} transparent opacity={0.5} />
+      </mesh>
+      {blades.map((b, i) => (
+        <mesh key={i} position={[b.bx, b.h / 2, b.bz]} rotation={[b.tilt, 0, b.tilt]} castShadow>
+          <boxGeometry args={[0.05, b.h, 0.05]} />
+          <meshStandardMaterial color="#1c6b32" emissive="#37ff7a" emissiveIntensity={0.7} roughness={0.7} />
+        </mesh>
+      ))}
+      <Text position={[0, 1.25, 0]} fontSize={0.16} color="#37ff7a" anchorX="center" anchorY="middle" outlineWidth={0.008} outlineColor="#000">
+        TALL GRASS
       </Text>
     </group>
   );
@@ -261,6 +304,14 @@ export default function Hub({ onActivateCabinet, paused = false }) {
       ))}
 
       <TraxyKiosk position={[7, 0, 2]} paused={paused} />
+
+      {/* M7: rideable neon cycle + its bay (press E near the bay to ride). */}
+      <Cycle paused={paused} />
+
+      {/* M7: tall-grass patches — ride/walk in to trigger a NEON RUNNER duel. */}
+      {GRASS_ZONES.map((zn, i) => (
+        <TallGrass key={i} x={zn.x} z={zn.z} r={zn.r} />
+      ))}
 
       {THROWABLES.map((p, i) => (
         <Throwable key={i} kind={p.kind} position={p.position} color={p.color} />

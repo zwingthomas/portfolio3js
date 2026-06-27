@@ -25,6 +25,10 @@ export const ASSET_SLOTS = {
     // M6 roaming threat. Empty slot → a primitive horned-capsule mesh built in
     // Minotaur.jsx. ORIGINAL model only — never a real character (see ASSETS.md M6).
     minotaur: pub('arcade/models/minotaur.glb'),
+    // M7 rideable neon light-cycle. Empty slot → a primitive low-poly neon cycle
+    // built in Cycle.jsx. ORIGINAL model only — never a real Tron/light-cycle
+    // likeness (see ASSETS.md M7).
+    cycle: pub('arcade/models/cycle.glb'),
   },
   loader: {
     // M2 loading animation. ALL optional — the loader runs a procedural,
@@ -51,6 +55,9 @@ export const ASSET_SLOTS = {
     // M6 death: ORIGINAL defeat sting played once on death. Empty slot → silence
     // (createSilentAudio no-ops). Never a real song/score (see ASSETS.md M6).
     defeatSting: pub('arcade/audio/defeat-sting.mp3'),
+    // M7 neon cycle: optional looping engine/hum while riding. Empty slot →
+    // silence (createSilentAudio no-ops). ORIGINAL audio only (see ASSETS.md M7).
+    cycleHum: pub('arcade/audio/cycle-hum.mp3'),
     // M3 PULSE cabinet tracks. ALL optional — empty slots fall back to a
     // generated WebAudio metronome/tone so judgments still work (see
     // games/pulseAudio.js + ASSETS.md M3). Track 1 is the primary; the encore

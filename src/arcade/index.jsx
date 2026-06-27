@@ -1,10 +1,12 @@
 import { Suspense, lazy, useState, useEffect, useCallback, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { KeyboardControls, Html, useProgress } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import { CONTROLS_MAP, PLAYER_CONFIG } from './controls';
 import { HeldObjectProvider, useHeldObject } from './useHeldObject';
 import { PlayerStateProvider, usePlayerState } from './usePlayerState';
+import { RideStateProvider, useRideState } from './useRideState';
+import { inTallGrass, GRASS_STEP, makeRng, rollEncounter } from './cycleMath';
 import { isCoarsePointer, resetTouchInput } from './touchInput';
 import Player from './Player';
 import Hub from './Hub';
@@ -18,6 +20,10 @@ import DefeatOverlay from './DefeatOverlay';
 const PulseGame = lazy(() => import('./games/PulseGame'));
 const GridlockGame = lazy(() => import('./games/GridlockGame'));
 const CascadeGame = lazy(() => import('./games/CascadeGame'));
+// M7 NEON RUNNER grid duel — triggered when the riding player enters a hub
+// "tall grass" zone (see <GrassEncounter> below), not a cabinet. Lazy like the
+// cabinet games so it never bloats the initial paint.
+const NeonRunnerGame = lazy(() => import('./games/NeonRunnerGame'));
 
 // ===========================================================================
 // ArcadeExperience — Milestone-1 explorable 3D hub.
@@ -60,6 +66,12 @@ export default function ArcadeExperience({ onExit }) {
   const [activeGame, setActiveGame] = useState(null);
   const activeGameRef = useRef(activeGame);
   activeGameRef.current = activeGame;
+
+  // M7: per-encounter seed for the NEON RUNNER duel (varies each grass trigger
+  // so back-to-back duels don't replay identically). Lifted riding flag drives
+  // the DOM "RIDING" hint (set by <RideBridge>).
+  const [encounterSeed, setEncounterSeed] = useState(0);
+  const [riding, setRiding] = useState(false);
 
   // M6: latched true while the defeat overlay is up. Lifted out of the shared
   // player-state store by <DeathLayer>; it freezes the world (paused) and gates
@@ -104,6 +116,15 @@ export default function ArcadeExperience({ onExit }) {
 
   const handleCloseGame = useCallback(() => setActiveGame(null), []);
 
+  // M7: a tall-grass roll hit while riding → open the full-screen NEON RUNNER
+  // duel. Free the cursor first (mirrors the cabinet launches) so the duel's DOM
+  // UI / tap input works; the world freezes via `frozen` while the duel is up.
+  const handleGrassEncounter = useCallback((n) => {
+    try { document.exitPointerLock?.(); } catch { /* ignore */ }
+    setEncounterSeed(n);
+    setActiveGame('NEON_RUNNER');
+  }, []);
+
   // Stable identities so the loader's scene-ready beacon + dismiss backstop are
   // wired exactly once (an inline arrow would re-fire / restart them on every
   // re-render from setLocked / setHolding).
@@ -123,6 +144,7 @@ export default function ArcadeExperience({ onExit }) {
       <KeyboardControls map={CONTROLS_MAP}>
         <HeldObjectProvider>
           <PlayerStateProvider>
+           <RideStateProvider>
             <Canvas
               shadows
               dpr={[1, 1.8]}
@@ -140,6 +162,9 @@ export default function ArcadeExperience({ onExit }) {
                       player, frozen while a cabinet game is open. Death/respawn is
                       driven through the shared player-state store. */}
                   <Minotaur paused={activeGame != null} />
+                  {/* M7: watches the riding player's travel through "tall grass"
+                      and rolls a NEON RUNNER encounter; fires once per entry. */}
+                  <GrassEncounter paused={frozen} onEncounter={handleGrassEncounter} />
                   {/* bridge held-state from the per-frame system into React for HUD.
                       Mounted inside provider so it can subscribe. */}
                   <HeldStateBridge onChange={setHolding} />
@@ -177,6 +202,37 @@ export default function ArcadeExperience({ onExit }) {
                 <CascadeGame onExit={handleCloseGame} />
               </Suspense>
             )}
+            {/* M7 NEON RUNNER grid duel (triggered from a tall-grass roll while
+                riding). Full-screen DOM overlay, lazy like the cabinets; ESC is
+                routed by the window handler above to close it and ride on. */}
+            {activeGame === 'NEON_RUNNER' && (
+              <Suspense fallback={null}>
+                <NeonRunnerGame onExit={handleCloseGame} seed={encounterSeed} />
+              </Suspense>
+            )}
+            {/* M7: lift the ride flag into React for the HUD hint. */}
+            <RideBridge onRidingChange={setRiding} />
+            {riding && !frozen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 84,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  zIndex: 2,
+                  pointerEvents: 'none',
+                  color: '#36d6ff',
+                  fontFamily: 'monospace',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textShadow: '0 0 8px #000, 0 0 14px #36d6ff',
+                }}
+              >
+                ◈ RIDING · {touchMode ? 'GRAB' : 'E'} to dismount · ride into TALL GRASS for a duel
+              </div>
+            )}
+           </RideStateProvider>
           </PlayerStateProvider>
         </HeldObjectProvider>
       </KeyboardControls>
@@ -207,6 +263,83 @@ function HeldStateBridge({ onChange }) {
     const unsub = held.subscribe((id) => onChange(id != null));
     return unsub;
   }, [held, onChange]);
+  return null;
+}
+
+// M7: per-frame watcher (inside the Canvas) that turns riding the cycle through
+// a hub "tall grass" zone into a NEON RUNNER encounter. Each frame it tracks how
+// far the rider has travelled INSIDE a patch; every GRASS_STEP metres it pulls
+// one seeded roll, and a hit fires onEncounter(count) ONCE. It re-arms only after
+// the rider leaves every patch, so the duel can't immediately re-trigger when it
+// closes (you're still standing in the grass). Alloc-free: one mutable scratch
+// read each frame + a fixed-seed PRNG stream (deterministic, no Math.random).
+function GrassEncounter({ paused = false, onEncounter }) {
+  const ride = useRideState();
+  const { camera } = useThree();
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  const onEncounterRef = useRef(onEncounter);
+  onEncounterRef.current = onEncounter;
+
+  const s = useRef(null);
+  if (s.current === null) {
+    s.current = { rng: makeRng(0x9e7c15), prevX: 0, prevZ: 0, havePrev: false, dist: 0, armed: true, count: 0 };
+  }
+
+  useFrame(() => {
+    const st = s.current;
+    // Frozen (a game open / dead) or on foot: stop accumulating so resuming the
+    // ride doesn't bank a huge teleport-sized step.
+    if (pausedRef.current || !ride.getRiding()) {
+      st.havePrev = false;
+      st.dist = 0;
+      return;
+    }
+    const px = camera.position.x;
+    const pz = camera.position.z;
+    if (inTallGrass(px, pz) === -1) {
+      // ridden out of all grass → re-arm and reset travel tracking.
+      st.armed = true;
+      st.dist = 0;
+      st.havePrev = true;
+      st.prevX = px;
+      st.prevZ = pz;
+      return;
+    }
+    // inside a patch: seed prev on entry, then accumulate planar travel.
+    if (!st.havePrev) {
+      st.havePrev = true;
+      st.prevX = px;
+      st.prevZ = pz;
+      return;
+    }
+    const dx = px - st.prevX;
+    const dz = pz - st.prevZ;
+    st.prevX = px;
+    st.prevZ = pz;
+    st.dist += Math.sqrt(dx * dx + dz * dz);
+    if (st.armed && st.dist >= GRASS_STEP) {
+      st.dist = 0;
+      if (rollEncounter(st.rng)) {
+        st.armed = false; // one duel per grass entry; re-arm on leaving
+        st.count += 1;
+        if (onEncounterRef.current) onEncounterRef.current(st.count);
+      }
+    }
+  });
+  return null;
+}
+
+// M7: bridges the shared ride flag (mount/dismount) into React so the DOM HUD
+// can show a "RIDING" hint. Lives in the DOM tree inside <RideStateProvider>.
+function RideBridge({ onRidingChange }) {
+  const ride = useRideState();
+  const onChangeRef = useRef(onRidingChange);
+  onChangeRef.current = onRidingChange;
+  useEffect(() => {
+    const unsub = ride.subscribe((r) => onChangeRef.current?.(r));
+    return unsub;
+  }, [ride]);
   return null;
 }
 
