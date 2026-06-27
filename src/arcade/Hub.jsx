@@ -134,9 +134,10 @@ function SpawnPad() {
   );
 }
 
-// M7 "tall grass": an ORIGINAL glowing neon-grass patch. Walking / riding into
-// one can trigger a NEON RUNNER grid-duel (the encounter watcher lives in
-// index.jsx; the zone geometry is the shared GRASS_ZONES in cycleMath.js). No
+// M7 "tall grass": an ORIGINAL glowing neon-grass patch. Riding into one can
+// trigger a NEON RUNNER grid-duel (the encounter watcher only accumulates while
+// riding — on foot you pass through; it lives in index.jsx, and the zone
+// geometry is the shared GRASS_ZONES in cycleMath.js). No
 // collider — you pass right through it. Blades are laid out deterministically
 // (golden-ratio spiral) so there's no per-frame work and no PRNG dependency.
 function TallGrass({ x, z, r }) {
@@ -308,7 +309,7 @@ export default function Hub({ onActivateCabinet, paused = false }) {
       {/* M7: rideable neon cycle + its bay (press E near the bay to ride). */}
       <Cycle paused={paused} />
 
-      {/* M7: tall-grass patches — ride/walk in to trigger a NEON RUNNER duel. */}
+      {/* M7: tall-grass patches — ride in to trigger a NEON RUNNER duel. */}
       {GRASS_ZONES.map((zn, i) => (
         <TallGrass key={i} x={zn.x} z={zn.z} r={zn.r} />
       ))}

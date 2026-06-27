@@ -10,7 +10,7 @@ import { useRideState } from './useRideState';
 import { touchInput } from './touchInput';
 import { clampPitch } from './touchMath';
 import { fallDamage } from './deathMath';
-import { RIDE_MAX_SPEED, RIDE_ACCEL, RIDE_FRICTION, MOUNT_RADIUS } from './cycleMath';
+import { RIDE_ACCEL, RIDE_FRICTION, MOUNT_RADIUS, rideTopSpeed, approach } from './cycleMath';
 
 // First-person player: a dynamic capsule RigidBody with locked rotations.
 // - WASD moves relative to camera yaw.
@@ -248,7 +248,13 @@ export default function Player({ onLockChange, touchMode = false, paused = false
     // authority (momentum: you spool up), and a gentle coast instead of the
     // snappy on-foot friction. Constants live in cycleMath.js (unit-tested).
     const riding = ride.getRiding();
-    const topSpeed = riding ? RIDE_MAX_SPEED : config.moveSpeed;
+    // While riding: full speed ahead, a slow crawl in reverse (rideTopSpeed +
+    // RIDE_REVERSE_FACTOR — unit-tested in cycleMath). The throttle sign is the
+    // sign of the intended move along the (normalised) camera forward, computed
+    // alloc-free from the existing scratch vectors; pure lateral strafe (dot ≈ 0)
+    // counts as forward so A/D still slides you at full speed.
+    const ridingThrottle = riding && tmp.move.dot(tmp.forward) < -0.01 ? -1 : 1;
+    const topSpeed = riding ? rideTopSpeed(ridingThrottle) : config.moveSpeed;
     const groundAuthority = riding ? RIDE_ACCEL : 1;
     const airAuthority = riding ? RIDE_ACCEL * 0.5 : config.airControl;
     const coastFriction = riding ? RIDE_FRICTION : 0.7;
@@ -262,9 +268,10 @@ export default function Player({ onLockChange, touchMode = false, paused = false
       const speed = topSpeed * inputMag;
       const targetX = tmp.move.x * speed;
       const targetZ = tmp.move.z * speed;
-      // lerp horizontal velocity toward target for snappy-but-damped feel.
-      const nx = lv.x + (targetX - lv.x) * authority;
-      const nz = lv.z + (targetZ - lv.z) * authority;
+      // ease horizontal velocity toward target for a snappy-but-damped feel
+      // (shared, unit-tested momentum curve — see cycleMath.approach).
+      const nx = approach(lv.x, targetX, authority);
+      const nz = approach(lv.z, targetZ, authority);
       body.setLinvel({ x: nx, y: lv.y, z: nz }, true);
     } else if (grounded.current) {
       // friction-style stop when no input and on the ground (cycle coasts).

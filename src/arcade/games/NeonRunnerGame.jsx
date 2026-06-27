@@ -34,6 +34,7 @@ import {
 // ===========================================================================
 
 const TICK_MS = 110; // duel advances one cell every this many ms
+const START_DELAY_MS = 1100; // "ready" beat: hold the board still under the intro banner before the first auto-step
 const RESULT_MS = 2000; // how long the win/lose/draw card lingers before auto-exit
 const DUEL_SEED = 0x4e07; // fixed seed base; nudged by the per-encounter `seed` prop
 
@@ -81,6 +82,7 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
   const reducedRef = useRef(reducedMotion);
   const onExitRef = useRef(onExit);
   const turnRef = useRef(null); // exposed so the touch D-pad can steer
+  const resultLiveRef = useRef(null); // polite live region for the duel outcome
 
   // mutable duel + timing state read every frame (no React churn during play).
   const gRef = useRef(null);
@@ -93,7 +95,7 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
       bannerText: 'NEON RUNNER · LAST RIDER STANDING',
       bannerUntil: 0,
       // cached result strings (built once on resolve)
-      _result: '', _resultStr: '', _resultSub: '',
+      _resultStr: '', _resultSub: '',
     };
   }
 
@@ -218,6 +220,17 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
       ctx.fillRect(x + 1, y + 1, layout.cell - 2, layout.cell - 2);
     }
 
+    // Hoisted out of draw() so NO closure is allocated per frame (zero-alloc
+    // gate, matching CascadeGame's hoisted draw callbacks). `reduced`
+    // (reducedRef.current) is the only frame-varying input, passed as an arg.
+    function drawHead(rider, color, reduced) {
+      ctx.save();
+      ctx.fillStyle = color;
+      if (!reduced) { ctx.shadowColor = color; ctx.shadowBlur = 14; }
+      cellRect(rider.col, rider.row);
+      ctx.restore();
+    }
+
     function draw() {
       if (!ctx) return;
       const g = gRef.current;
@@ -260,16 +273,10 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
       }
       ctx.globalAlpha = 1;
 
-      // heads (bright, with glow unless reduced motion)
-      const drawHead = (rider, color) => {
-        ctx.save();
-        ctx.fillStyle = color;
-        if (!reduced) { ctx.shadowColor = color; ctx.shadowBlur = 14; }
-        cellRect(rider.col, rider.row);
-        ctx.restore();
-      };
-      drawHead(duel.player, PLAYER_COLOR);
-      drawHead(duel.cpu, CPU_COLOR);
+      // heads (bright, with glow unless reduced motion). drawHead is hoisted to
+      // the effect body so no per-frame closure is allocated.
+      drawHead(duel.player, PLAYER_COLOR, reduced);
+      drawHead(duel.cpu, CPU_COLOR, reduced);
 
       // intro banner
       if (tNow < g.bannerUntil && g.bannerText) {
@@ -336,13 +343,17 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
           if (isOver(g.duel)) {
             g.resultAt = tNow;
             const s = g.duel.status;
-            g._result = s;
             g._resultStr = s === 'win' ? 'YOU WIN' : s === 'draw' ? 'DRAW' : 'DEFEATED';
             g._resultSub = s === 'win'
               ? 'rival derezzed · tap / Enter to ride on'
               : s === 'draw'
                 ? 'mutual wipeout · tap / Enter to ride on'
                 : 'you derezzed · tap / Enter to ride on';
+            // Announce the outcome once to assistive tech (the canvas is
+            // aria-hidden) — a single write on resolve, no per-frame alloc.
+            if (resultLiveRef.current) {
+              resultLiveRef.current.textContent = `${g._resultStr}. ${g._resultSub}`;
+            }
             if (s === 'win') audio.playWin();
             else if (s === 'draw') audio.playCrash();
             else { audio.playCrash(); audio.playLose(); }
@@ -357,9 +368,12 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
       rafRef.current = requestAnimationFrame(frame);
     }
 
-    // kick off
-    gRef.current.lastTick = 0;
-    gRef.current.bannerUntil = perfNow() + 2200;
+    // kick off — hold the board still for a short "ready" beat under the intro
+    // banner so a player reading it isn't auto-driven into a wall before they
+    // can steer (the player rider auto-advances DIR.up from the first tick).
+    const t0 = perfNow();
+    gRef.current.bannerUntil = t0 + 2200;
+    gRef.current.lastTick = t0 + START_DELAY_MS;
     rafRef.current = requestAnimationFrame(frame);
 
     return () => {
@@ -409,6 +423,26 @@ export default function NeonRunnerGame({ onExit, seed = 1 }) {
       }}
     >
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, display: 'block' }} aria-hidden />
+
+      {/* Visually-hidden polite live region: the win/lose/draw outcome (painted
+          on the aria-hidden canvas) is announced here once on resolve, so
+          screen-reader users learn the result + that control is handed back. */}
+      <div
+        ref={resultLiveRef}
+        role="status"
+        aria-live="polite"
+        style={{
+          position: 'absolute',
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: 'hidden',
+          clip: 'rect(0 0 0 0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+        }}
+      />
 
       {/* exit (ESC also exits — routed by index.jsx) */}
       <button
