@@ -6,6 +6,7 @@ import { CONTROLS_MAP, PLAYER_CONFIG } from './controls';
 import { HeldObjectProvider, useHeldObject } from './useHeldObject';
 import { PlayerStateProvider, usePlayerState } from './usePlayerState';
 import { RideStateProvider, useRideState } from './useRideState';
+import { QuestProvider, useQuest } from './useQuest';
 import { inTallGrass, GRASS_STEP, makeRng, rollEncounter } from './cycleMath';
 import { isCoarsePointer, resetTouchInput } from './touchInput';
 import Player from './Player';
@@ -146,6 +147,7 @@ export default function ArcadeExperience({ onExit }) {
         <HeldObjectProvider>
           <PlayerStateProvider>
            <RideStateProvider>
+            <QuestProvider>
             <Canvas
               shadows
               dpr={[1, 1.8]}
@@ -172,6 +174,11 @@ export default function ArcadeExperience({ onExit }) {
                       unset (the default shipped state) → the world runs solo. */}
                   <GhostRecorder />
                   <GhostReplay paused={frozen} touchMode={touchMode} />
+                  {/* M9 adventure layer: watches the player's position and marks
+                      each attraction (cabinets, kiosk, cycle bay, grass,
+                      mezzanine) discovered as they walk near it, feeding the
+                      objective HUD. Zero per-frame alloc; no-ops while frozen. */}
+                  <QuestWatcher paused={frozen} />
                   {/* bridge held-state from the per-frame system into React for HUD.
                       Mounted inside provider so it can subscribe. */}
                   <HeldStateBridge onChange={setHolding} />
@@ -183,6 +190,12 @@ export default function ArcadeExperience({ onExit }) {
             </Canvas>
 
             <Hud locked={locked} holding={holding} onExit={onExit} touchMode={touchMode} />
+            {/* M9 objective tracker: progress + next suggested attraction. Lives
+                in the DOM inside <QuestProvider>; hidden while the world is frozen
+                (a cabinet game open / dead) so it never covers a game UI, and
+                hidden while riding so it never overlaps the top-center RIDING hint
+                (which already carries the grass guidance). */}
+            <QuestHud frozen={frozen} riding={riding} touchMode={touchMode} />
             {/* M6 health bar + defeat overlay + respawn. <DeathLayer> lives in the
                 DOM (inside the provider) so it can both lift `dead` into React and
                 call respawn(). Hidden while a cabinet game owns the screen. */}
@@ -239,6 +252,7 @@ export default function ArcadeExperience({ onExit }) {
                 ◈ RIDING · {touchMode ? 'GRAB' : 'E'} to dismount · ride into TALL GRASS for a duel
               </div>
             )}
+            </QuestProvider>
            </RideStateProvider>
           </PlayerStateProvider>
         </HeldObjectProvider>
@@ -348,6 +362,101 @@ function RideBridge({ onRidingChange }) {
     return unsub;
   }, [ride]);
   return null;
+}
+
+// M9: per-frame watcher (inside the Canvas) that records "discovery" of each
+// attraction as the player walks near it. Reads the camera XZ and asks the quest
+// store to mark the nearest undiscovered landmark found; the store no-ops once a
+// spot is known, so the steady state is a handful of distance² compares with
+// ZERO per-frame allocation. Frozen (a game open / dead) → skip.
+function QuestWatcher({ paused = false }) {
+  const quest = useQuest();
+  const { camera } = useThree();
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  useFrame(() => {
+    if (pausedRef.current) return;
+    quest.tryDiscover(camera.position.x, camera.position.z);
+  });
+  return null;
+}
+
+// M9 objective tracker (DOM overlay): subscribes to the quest store and shows the
+// current progress + the next suggested attraction, plus a row of pips and a
+// brief "DISCOVERED: X" line on the latest find. Static text only (no animation)
+// so it's reduced-motion safe by construction. Lives inside <QuestProvider>.
+//
+// HUD layering: the top-center column is shared with the touch look-hint
+// (TouchControls, top:56) and the RIDING hint (top:84). To avoid overlap we (a)
+// hide entirely while `riding` (the RIDING hint already names the grass
+// objective), and (b) on touch drop below the look-hint band (top:92). On
+// desktop it sits at the top of the column (top:52) with the riding hint hidden
+// unless riding (when we're hidden), so the bands never collide.
+function QuestHud({ frozen = false, riding = false, touchMode = false }) {
+  const quest = useQuest();
+  const [snap, setSnap] = useState(() => quest.getSummary());
+  useEffect(() => {
+    const unsub = quest.subscribe((s) => setSnap(s));
+    return unsub;
+  }, [quest]);
+
+  if (frozen || riding) return null;
+  const { found, total, complete, line, lastLabel } = snap;
+  const accent = complete ? '#ffd23b' : '#36d6ff';
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: touchMode ? 92 : 52,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 2,
+        pointerEvents: 'none',
+        maxWidth: '92vw',
+        textAlign: 'center',
+        fontFamily: 'monospace',
+      }}
+    >
+      <div
+        style={{
+          display: 'inline-block',
+          background: 'rgba(10,4,32,0.66)',
+          border: `1px solid ${accent}`,
+          borderRadius: 8,
+          padding: '5px 12px',
+          color: '#eaf4ff',
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: '0.04em',
+          textShadow: '0 0 8px #000',
+          boxShadow: '0 0 12px rgba(0,0,0,0.45)',
+        }}
+      >
+        <span style={{ color: accent }}>{complete ? '★ ' : '◈ '}</span>
+        {line}
+        <div style={{ marginTop: 4, display: 'flex', gap: 4, justifyContent: 'center' }}>
+          {Array.from({ length: total }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: i < found ? accent : 'transparent',
+                border: `1px solid ${accent}`,
+                boxShadow: i < found ? `0 0 6px ${accent}` : 'none',
+              }}
+            />
+          ))}
+        </div>
+        {lastLabel && !complete && (
+          <div style={{ marginTop: 3, color: '#36ff9e', fontSize: 10, letterSpacing: '0.08em' }}>
+            DISCOVERED: {lastLabel}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // M6: bridges the shared `dead` latch into React (lifting it to ArcadeExperience

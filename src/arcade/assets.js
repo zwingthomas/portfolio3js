@@ -29,6 +29,11 @@ export const ASSET_SLOTS = {
     // built in Cycle.jsx. ORIGINAL model only — never a real Tron/light-cycle
     // likeness (see ASSETS.md M7).
     cycle: pub('arcade/models/cycle.glb'),
+    // M9 optional baked office-decor model, layered on top of the always-present
+    // procedural set dressing in Decor.jsx. Empty slot → null (procedural decor
+    // only). ORIGINAL parody only — never real "The Office"/Dunder Mifflin IP
+    // (see ASSETS.md M9).
+    decor: pub('arcade/models/decor.glb'),
   },
   loader: {
     // M2 loading animation. ALL optional — the loader runs a procedural,

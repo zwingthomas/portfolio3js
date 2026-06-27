@@ -7,6 +7,7 @@ import Cabinet from './Cabinet';
 import Throwable from './Throwable';
 import SafeModel from './SafeModel';
 import Cycle from './Cycle';
+import Decor from './Decor';
 import { ASSET_SLOTS } from './assets';
 import { GRASS_ZONES } from './cycleMath';
 
@@ -290,6 +291,11 @@ export default function Hub({ onActivateCabinet, paused = false }) {
       <Room />
       <SpawnPad />
       <FallLedge x={-10} />
+
+      {/* M9: ORIGINAL parody office-flavor decor + wayfinding signage (reception,
+          directory signpost, posters, break room, bulletin board, plants). Purely
+          visual (no colliders); makes the world discoverable through exploration. */}
+      <Decor />
 
       {CABINETS.map((c) => (
         <Cabinet

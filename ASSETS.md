@@ -120,10 +120,23 @@ on `expiresAt`, re-applied client-side on read). Client code:
 > GitHub Pages origin + Vite dev). No client change required.
 
 ## M9 — Office-flavor decor (ORIGINAL parody only — NO real The Office IP)
+The M9 set dressing (`src/arcade/Decor.jsx`) is **fully procedural** — reception
+desk, directory signpost, motivational posters with ORIGINAL slogans, break-room
+(water cooler + coffee station), filing cabinets, a bulletin board of original
+sticky-notes, and potted plants — and ships with **no asset files**. The
+adventure layer (`questMath.js` + `useQuest.js` + the in-world directory + the
+DOM objective HUD) makes the 3 cabinets + threat + cycle + grass discoverable
+through exploration. The slots below are **optional** drop-in enhancements.
+
 | Slot path | What it is | Accepted formats | Fallback if absent |
 |---|---|---|---|
+| `public/arcade/models/decor.glb` | ORIGINAL parody baked office-decor model, layered on top of the procedural set dressing via `<SafeModel>` (slot `ASSET_SLOTS.models.decor`) | glb / gltf | `null` (procedural decor only — the default shipped state) |
 | `public/arcade/textures/decor-*.png` | ORIGINAL parody workplace-sitcom decor textures | png / webp | Procedural materials / primitive props |
-| `public/arcade/models/decor-*.glb` | ORIGINAL parody decor props | glb / gltf | Primitive prop meshes |
+| `public/arcade/models/decor-*.glb` | Additional ORIGINAL parody decor props | glb / gltf | Primitive prop meshes |
+
+> LEGAL: every slogan/sticky-note/label in `Decor.jsx` is ORIGINAL parody. NO
+> real "The Office" / Dunder Mifflin IP, no real character names or likenesses,
+> no studio logos. Any dropped asset must likewise be original/licensed.
 
 ## M10 — Polish / QA
 No new asset slots. Verifies all of the above degrade gracefully when their
