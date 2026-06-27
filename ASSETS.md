@@ -102,12 +102,22 @@ Rideable original cycle; grid-duel encounter in "tall grass" zones.
 
 ## M8 — Ghost backend (Cloud Run + Firestore)
 No binary asset slots — this is runtime config, not a committed asset. Endpoint
-config is provided via env/build config (the main loop owns env wiring), never a
-committed secret. Recorded sessions are anonymous with a 30-day TTL.
+config is provided via env/build config, never a committed secret. Recorded
+sessions are **fully anonymous** (random client UUID + sampled world poses only:
+no name, email, IP, or user-agent) with a **30-day TTL** (Firestore TTL policy
+on `expiresAt`, re-applied client-side on read). Client code:
+`src/arcade/ghostMath.js` (pure, node-tested), `src/arcade/ghostClient.js`
+(network), `src/arcade/Ghosts.jsx` (record + replay).
 
 | Config | What it is | Where it lives | Fallback if absent |
 |---|---|---|---|
-| Ghost service base URL | Cloud Run endpoint for record/replay | build/env config (NOT committed) | Ghost replay disabled; world runs solo |
+| `VITE_GHOST_API_BASE` | Cloud Run base URL for record/replay (e.g. `https://ghost-replay-api-xxxx.run.app`) | Vite env (`.env` / deploy env) — Vite exposes `VITE_*` to the client at build time; NOT committed, no `vite.config.js` edit needed | **Ghost record + replay disabled; world runs solo** (default shipped state). All network calls are gated on this; build stays green with it unset. |
+
+> Owner action to enable: deploy `backend/` to Cloud Run, enable the Firestore
+> TTL policy on `expiresAt` (see `backend/README.md`), then set
+> `VITE_GHOST_API_BASE` to the service URL and rebuild. The backend's
+> `ALLOWED_ORIGINS` must include the site origin (default already lists the
+> GitHub Pages origin + Vite dev). No client change required.
 
 ## M9 — Office-flavor decor (ORIGINAL parody only — NO real The Office IP)
 | Slot path | What it is | Accepted formats | Fallback if absent |

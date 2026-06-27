@@ -14,6 +14,7 @@ import Minotaur from './Minotaur';
 import TouchControls from './TouchControls';
 import ArcadeLoader from './ArcadeLoader';
 import DefeatOverlay from './DefeatOverlay';
+import { GhostReplay, GhostRecorder } from './Ghosts';
 
 // Game modules are lazy-loaded so they never bloat the initial portfolio paint;
 // they only fetch once the player actually enters a cabinet.
@@ -165,6 +166,12 @@ export default function ArcadeExperience({ onExit }) {
                   {/* M7: watches the riding player's travel through "tall grass"
                       and rolls a NEON RUNNER encounter; fires once per entry. */}
                   <GrassEncounter paused={frozen} onEncounter={handleGrassEncounter} />
+                  {/* M8 ghost backend: records THIS visit anonymously (poses only,
+                      no PII) and replays recent visitors' ghosts with floating
+                      date/time labels. Both no-op when VITE_GHOST_API_BASE is
+                      unset (the default shipped state) → the world runs solo. */}
+                  <GhostRecorder />
+                  <GhostReplay paused={frozen} touchMode={touchMode} />
                   {/* bridge held-state from the per-frame system into React for HUD.
                       Mounted inside provider so it can subscribe. */}
                   <HeldStateBridge onChange={setHolding} />
