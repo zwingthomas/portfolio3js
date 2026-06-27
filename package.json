@@ -8,7 +8,7 @@
     "build": "NODE_OPTIONS='--max-old-space-size=8192' vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist -t true"
+    "deploy": "npm run build && gh-pages -d dist -t"
   },
   "homepage": "https://zwingthomas.github.io/portfolio3js",
   "dependencies": {
