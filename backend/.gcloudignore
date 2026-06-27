@@ -1,0 +1,28 @@
+# Use .gcloudignore semantics; do NOT inherit .gitignore.
+#!include:.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Local config / secrets
+.env
+*.local
+
+# Tooling / docs not needed for deploy
+.git/
+.gitignore
+README.md
+test_main.py
+
+# OS cruft
+.DS_Store

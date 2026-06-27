@@ -42,12 +42,14 @@ const About = () => {
         variants={fadeIn("", "", 0.1, 1)}
         className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
       >
-        I am a skilled Site Reliability Engineer who recently received a certification for architecture through
-        the Professional Google Cloud Architect examination. I am also heading up a team of engineers who are working
-        to develop personal projects together in order to accomplish great things through the power of team work. It has
-        been an invaluable experience and my paired programming abilities as well as my mentorship and leadership skills have been honed
-        immesurably. It is amazing what one can accomplish with the power of a community behind you. Let me know if you
-        are interested in joining!
+        I am a Backend Software Engineer at Zubie, where I build AI-driven, cloud-native vehicle
+        telematics in Python on Google App Engine and Cloud Run for fleet accounts of up to ~60k vehicles.
+        As the engineering org's AI subject-matter expert, I lead a weekly session mentoring engineers on
+        Claude and own our AI-integration initiative, while driving API performance work, large-scale
+        refactors, and the team's CI and Terraform infrastructure-as-code efforts. I'm a Google Cloud
+        Professional Cloud Architect with deep roots in Site Reliability Engineering, and I love mentoring
+        peers and accomplishing great things through the power of teamwork. Let me know if you'd like to
+        build something together!
       </motion.p>
 
       <div className="mt-20 flex flex-wrap gap-10">

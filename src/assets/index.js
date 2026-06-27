@@ -25,6 +25,7 @@ import chrobinson from "./company/chrobinson.png";
 import utc from "./company/utc.png";
 import thomsonreuters from "./company/thomsonreuters.png";
 import travelers from "./company/travelers.png";
+import zubie from "./company/zubie.svg";
 
 import indigogardencinemaclub from "./projects/indigogardencinemaclub.png";
 import cloudagnostic from "./projects/cloudagnostic.png";
@@ -58,6 +59,7 @@ export {
   travelers,
   thomsonreuters,
   chrobinson,
+  zubie,
   indigogardencinemaclub,
   jenkins,
   cloudagnostic,

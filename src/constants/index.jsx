@@ -19,6 +19,7 @@ import {
     thomsonreuters,
     chrobinson,
     kohls,
+    zubie,
     jenkins,
     cloudagnostic,
     indigogardencinemaclub,
@@ -45,20 +46,20 @@ import {
   
   const services = [
     {
-      title: "Fullstack",
-      icon: web,
+      title: "Backend Engineer",
+      icon: backend,
     },
     {
       title: "Cloud Architect",
       icon: mobile,
     },
     {
-      title: "DSA Master",
-      icon: backend,
+      title: "AI Integration Lead",
+      icon: creator,
     },
     {
       title: "Site Reliability Engineer",
-      icon: creator,
+      icon: web,
     },
   ];
   
@@ -203,8 +204,25 @@ import {
         "Resolved critical Black Friday incident as an OpenShift SME during peak shipping loads Saturday night when I was not on-call. Without my intervention we would've had to VTO warehouse workers for all online sales during our most impactful shipping day of the year."
       ],
     },
+    {
+      title: "Backend Software Engineer",
+      company_name: "Zubie",
+      icon: zubie,
+      iconBg: "#E6F7F4",
+      date: "Jan 2025 - Present",
+      points: [
+        "Backend engineer on a vehicle telematics platform: Python on Google App Engine and Cloud Run, serving fleet accounts of up to ~60k vehicles.",
+        "AI subject-matter expert for the engineering org: lead a weekly session mentoring engineers on Claude (Chat, Cowork, and Code), own the AI-integration initiative, authored AI session policies enforced via config, and shipped reusable logging/audit hooks adopted across the team.",
+        "Cut the full test suite from ~6 minutes to ~30 seconds (~12x) by parallelizing with pytest-xdist, removing module-level rate-limit state and a blocking billing sleep, and shipping a versioned git-hook installer; 3,605 tests green in CI.",
+        "Led API performance work on the highest-traffic device endpoints (claim and device-list), cutting redundant round-trips and N+1 query patterns for the largest fleet accounts.",
+        "Re-architected the Bosch OEM integration from a 9,700-line monolith into modular, independently testable services behind a stable facade (62-file refactor); replaced a hand-rolled retry loop with Cloud Tasks-native exponential backoff.",
+        "Stood up the team's CI/quality stack from scratch: GitHub Actions test gating, pre-commit/pre-push hooks, Ruff linting, and migrated env + dependency management to uv.",
+        "Authored a read-only survey of the entire GCP estate and the Terraform IaC proposal to eliminate config drift across task queues, VPCs, IAM, and secrets; recommended to lead the migration.",
+        "Delivering new product surfaces end-to-end (device-status events, tailgating detection) and a FastAPI + Pydantic migration path off legacy App Engine APIs.",
+      ],
+    },
   ];
-  
+
   const testimonials = [
     {
       testimonial:
@@ -216,7 +234,7 @@ import {
     },
     {
       testimonial:
-        "During my internship at Kohl’s, Thomas was an assertive voice of reason for my team. In addition, he found an opportunity to reduce Redis' costs across the company. He was generous enough to include me in the project. He was a great mentor in preparing me for meetings with senior management. Due to his proactiveness, he was able to save the company upwards of $36,000 a month. In my short time knowing him, I found him resourceful, collaborative, and consistently supportive. I have no doubt he\’ll make a great addition to any team.",
+        "During my internship at Kohl’s, Thomas was an assertive voice of reason for my team. In addition, he found an opportunity to reduce Redis' costs across the company. He was generous enough to include me in the project. He was a great mentor in preparing me for meetings with senior management. Due to his proactiveness, he was able to save the company upwards of $36,000 a month. In my short time knowing him, I found him resourceful, collaborative, and consistently supportive. I have no doubt he’ll make a great addition to any team.",
       name: "Charles Havyarimana",
       designation: "Intern",
       company: "Kohl's",

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Local config / secrets
+.env
+*.local
+
+# Tooling / docs not needed in the image
+.git/
+.gitignore
+README.md
+test_main.py
+.dockerignore
+.gcloudignore
+
+# OS cruft
+.DS_Store

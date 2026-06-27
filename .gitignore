@@ -26,3 +26,15 @@ dist-ssr
 
 # environment variables
 .env
+
+# ralph loop — local secrets, state, and stop markers (never commit)
+.env.ralph
+.ralph/accounts.env
+.ralph/secrets.env
+DONE.md
+
+# python backend local artifacts
+backend/__pycache__/
+backend/.env
+backend/venv/
+backend/.venv/
